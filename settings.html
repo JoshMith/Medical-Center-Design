@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Settings - DKUT Medical Center</title>
+    <style>
+        :root {
+            --primary-blue: #0066CC;
+            --secondary-teal: #00A693;
+            --accent-green: #28A745;
+            --white: #FFFFFF;
+            --light-gray: #F8FAFC;
+            --medium-gray: #64748B;
+            --dark-gray: #334155;
+            --almost-black: #0F172A;
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--light-gray);
+            color: var(--dark-gray);
+            line-height: 1.6;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: white;
+            border-right: 1px solid #e2e8f0;
+            padding: 2rem 1rem;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+        }
+
+        .profile-card {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 1rem;
+            border: 3px solid var(--primary-blue);
+        }
+
+        .profile-name {
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .profile-role {
+            color: var(--medium-gray);
+            font-size: 0.9rem;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            color: var(--dark-gray);
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .nav-link:hover {
+            background-color: var(--light-gray);
+        }
+
+        .nav-link.active {
+            background-color: rgba(0, 102, 204, 0.1);
+            color: var(--primary-blue);
+            font-weight: 500;
+        }
+
+        .nav-link i {
+            margin-right: 0.75rem;
+            font-size: 1.1rem;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 2rem 3rem;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--almost-black);
+        }
+
+        .notification-bell {
+            position: relative;
+            font-size: 1.4rem;
+            color: var(--medium-gray);
+            cursor: pointer;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: var(--accent-green);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        /* Settings Card */
+        .settings-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--almost-black);
+        }
+
+        .edit-btn {
+            background: none;
+            border: none;
+            color: var(--primary-blue);
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--dark-gray);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+        }
+
+        .form-control:disabled {
+            background-color: #f8fafc;
+            color: var(--medium-gray);
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-blue);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #0052a3;
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-secondary {
+            background-color: white;
+            color: var(--primary-blue);
+            border: 1px solid var(--primary-blue);
+        }
+
+        .btn-secondary:hover {
+            background-color: rgba(0, 102, 204, 0.05);
+        }
+
+        /* Medical Info */
+        .medical-info-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .medical-info-item:last-child {
+            border-bottom: none;
+        }
+
+        .medical-info-label {
+            font-weight: 500;
+            color: var(--dark-gray);
+        }
+
+        .medical-info-value {
+            color: var(--medium-gray);
+        }
+
+        /* Emergency Contacts */
+        .contact-card {
+            background: var(--light-gray);
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .contact-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .contact-name {
+            font-weight: 600;
+        }
+
+        .contact-relation {
+            color: var(--medium-gray);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .contact-phone {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary-blue);
+            font-weight: 500;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                height: auto;
+                position: static;
+                border-right: none;
+                border-bottom: 1px solid #e2e8f0;
+            }
+
+            .main-content {
+                padding: 1.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="profile-card">
+                <img src="https://randomuser.me/api/portraits/women/45.jpg" alt="Profile" class="avatar">
+                <h3 class="profile-name">Jane Doe</h3>
+                <p class="profile-role">Student ID: DKUT/2024/012</p>
+            </div>
+
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="dashboard.html" class="nav-link">
+                        <i class="fas fa-home"></i> Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="appointments.html" class="nav-link">
+                        <i class="fas fa-calendar-check"></i> Appointments
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="prescriptions.html" class="nav-link">
+                        <i class="fas fa-prescription-bottle-alt"></i> Prescriptions
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="medical-records.html" class="nav-link">
+                        <i class="fas fa-file-medical"></i> Medical Records
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="settings.html" class="nav-link active">
+                        <i class="fas fa-user-cog"></i> Settings
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="header">
+                <h1 class="page-title">Account Settings</h1>
+                <div class="notification-bell">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge">3</span>
+                </div>
+            </div>
+
+            <!-- Personal Information Card -->
+            <div class="settings-card">
+                <div class="card-header">
+                    <h2 class="card-title">Personal Information</h2>
+                    <button class="edit-btn" id="editPersonalBtn">
+                        <i class="fas fa-edit"></i> Edit
+                    </button>
+                </div>
+
+                <form id="personalForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">First Name</label>
+                            <input type="text" class="form-control" id="firstName" value="Jane" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Last Name</label>
+                            <input type="text" class="form-control" id="lastName" value="Doe" disabled>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Date of Birth</label>
+                            <input type="date" class="form-control" id="dob" value="2000-05-15" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Gender</label>
+                            <select class="form-control" id="gender" disabled>
+                                <option value="female" selected>Female</option>
+                                <option value="male">Male</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" value="jane.doe@students.dkut.ac.ke" disabled>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Phone Number</label>
+                        <input type="tel" class="form-control" id="phone" value="+254712345678" disabled>
+                    </div>
+
+                    <div class="form-actions" id="personalFormActions" style="display: none;">
+                        <button type="button" class="btn btn-primary" id="savePersonalBtn">Save Changes</button>
+                        <button type="button" class="btn btn-secondary" id="cancelPersonalBtn">Cancel</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Medical Information Card -->
+            <div class="settings-card">
+                <div class="card-header">
+                    <h2 class="card-title">Medical Information</h2>
+                </div>
+
+                <div class="medical-info-item">
+                    <span class="medical-info-label">Blood Type</span>
+                    <span class="medical-info-value">O+</span>
+                </div>
+                <div class="medical-info-item">
+                    <span class="medical-info-label">Allergies</span>
+                    <span class="medical-info-value">Penicillin, Peanuts</span>
+                </div>
+                <div class="medical-info-item">
+                    <span class="medical-info-label">Chronic Conditions</span>
+                    <span class="medical-info-value">Asthma</span>
+                </div>
+                <div class="medical-info-item">
+                    <span class="medical-info-label">Current Medications</span>
+                    <span class="medical-info-value">Ventolin inhaler (as needed)</span>
+                </div>
+            </div>
+
+            <!-- Emergency Contacts Card -->
+            <div class="settings-card">
+                <div class="card-header">
+                    <h2 class="card-title">Emergency Contacts</h2>
+                    <button class="edit-btn">
+                        <i class="fas fa-plus"></i> Add Contact
+                    </button>
+                </div>
+
+                <div class="contact-card">
+                    <div class="contact-header">
+                        <span class="contact-name">John Doe</span>
+                        <button class="edit-btn" style="font-size: 0.9rem;">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                    </div>
+                    <p class="contact-relation">Father</p>
+                    <p class="contact-phone">
+                        <i class="fas fa-phone"></i> +254 722 987 654
+                    </p>
+                </div>
+
+                <div class="contact-card">
+                    <div class="contact-header">
+                        <span class="contact-name">Mary Doe</span>
+                        <button class="edit-btn" style="font-size: 0.9rem;">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                    </div>
+                    <p class="contact-relation">Mother</p>
+                    <p class="contact-phone">
+                        <i class="fas fa-phone"></i> +254 733 123 456
+                    </p>
+                </div>
+            </div>
+
+            <!-- Account Security Card -->
+            <div class="settings-card">
+                <div class="card-header">
+                    <h2 class="card-title">Account Security</h2>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Change Password</label>
+                    <input type="password" class="form-control" id="currentPassword" placeholder="Current Password">
+                </div>
+                <div class="form-group">
+                    <input type="password" class="form-control" id="newPassword" placeholder="New Password">
+                </div>
+                <div class="form-group">
+                    <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm New Password">
+                </div>
+                <button class="btn btn-primary">Update Password</button>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Toggle edit mode for personal information
+        const editPersonalBtn = document.getElementById('editPersonalBtn');
+        const personalFormControls = document.querySelectorAll('#personalForm .form-control, #personalForm select');
+        const personalFormActions = document.getElementById('personalFormActions');
+        const savePersonalBtn = document.getElementById('savePersonalBtn');
+        const cancelPersonalBtn = document.getElementById('cancelPersonalBtn');
+
+        editPersonalBtn.addEventListener('click', () => {
+            personalFormControls.forEach(control => {
+                control.disabled = !control.disabled;
+            });
+            
+            personalFormActions.style.display = personalFormActions.style.display === 'none' ? 'block' : 'none';
+            editPersonalBtn.style.display = 'none';
+        });
+
+        cancelPersonalBtn.addEventListener('click', () => {
+            personalFormControls.forEach(control => {
+                control.disabled = true;
+            });
+            
+            personalFormActions.style.display = 'none';
+            editPersonalBtn.style.display = 'flex';
+        });
+
+        savePersonalBtn.addEventListener('click', () => {
+            // Here you would typically save the data to the server
+            alert('Personal information updated successfully!');
+            
+            personalFormControls.forEach(control => {
+                control.disabled = true;
+            });
+            
+            personalFormActions.style.display = 'none';
+            editPersonalBtn.style.display = 'flex';
+        });
+
+        // Notification bell click handler
+        document.querySelector('.notification-bell').addEventListener('click', () => {
+            alert('You have 3 unread notifications');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Dashboard - DKUT Medical Center</title>
+    <style>
+        /* Shared Styles (same as previous pages) */
+        :root {
+            --primary-blue: #0066CC;
+            --secondary-teal: #00A693;
+            --accent-green: #28A745;
+            --urgent-red: #DC2626;
+            --warning-yellow: #F59E0B;
+            --success-green: #10B981;
+            --white: #FFFFFF;
+            --light-gray: #F8FAFC;
+            --medium-gray: #64748B;
+            --dark-gray: #334155;
+            --almost-black: #0F172A;
+            --hero-gradient: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-teal) 100%);
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--light-gray);
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Navigation */
+        .sidebar {
+            width: 260px;
+            background: var(--white);
+            height: 100vh;
+            position: fixed;
+            box-shadow: var(--shadow-md);
+            padding: 1.5rem 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            padding: 0 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--hero-gradient);
+            border-radius: 10px;
+            margin-right: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .logo-text {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+        }
+
+        .nav-menu {
+            list-style: none;
+            padding: 0;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1.5rem;
+            text-decoration: none;
+            color: var(--dark-gray);
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: rgba(0, 102, 204, 0.1);
+            color: var(--primary-blue);
+        }
+
+        .nav-link i {
+            margin-right: 0.75rem;
+            font-size: 1.1rem;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 260px;
+            padding: 2rem;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 1.75rem;
+            color: var(--almost-black);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--hero-gradient);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 0.75rem;
+            font-weight: 600;
+        }
+
+        .user-name {
+            font-weight: 500;
+            color: var(--dark-gray);
+        }
+
+        /* Dashboard Cards */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s ease;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--dark-gray);
+        }
+
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .card-icon.blue {
+            background: rgba(0, 102, 204, 0.1);
+            color: var(--primary-blue);
+        }
+
+        .card-icon.green {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success-green);
+        }
+
+        .card-icon.orange {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning-yellow);
+        }
+
+        .card-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--almost-black);
+            margin-bottom: 0.5rem;
+        }
+
+        .card-description {
+            color: var(--medium-gray);
+            font-size: 0.9rem;
+        }
+
+        /* Health Status */
+        .health-status {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .status-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .status-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--almost-black);
+        }
+
+        .status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .status-badge.good {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success-green);
+        }
+
+        .status-badge.warning {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning-yellow);
+        }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+        }
+
+        .status-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .status-info h4 {
+            font-size: 0.95rem;
+            color: var(--dark-gray);
+            margin-bottom: 0.25rem;
+        }
+
+        .status-info p {
+            font-size: 0.9rem;
+            color: var(--medium-gray);
+        }
+
+        /* Appointments */
+        .appointments-section {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--almost-black);
+        }
+
+        .section-action {
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .appointment-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .appointment-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .appointment-item:last-child {
+            border-bottom: none;
+        }
+
+        .appointment-info h4 {
+            font-size: 1rem;
+            color: var(--dark-gray);
+            margin-bottom: 0.25rem;
+        }
+
+        .appointment-info p {
+            font-size: 0.9rem;
+            color: var(--medium-gray);
+        }
+
+        .appointment-time {
+            font-weight: 600;
+            color: var(--almost-black);
+        }
+
+        .appointment-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .status-scheduled {
+            background: rgba(0, 102, 204, 0.1);
+            color: var(--primary-blue);
+        }
+
+        .status-completed {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success-green);
+        }
+
+        .status-cancelled {
+            background: rgba(220, 38, 38, 0.1);
+            color: var(--urgent-red);
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .action-card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: var(--dark-gray);
+        }
+
+        .action-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+            color: var(--primary-blue);
+        }
+
+        .action-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: rgba(0, 102, 204, 0.1);
+            color: var(--primary-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.5rem;
+        }
+
+        .action-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .action-description {
+            font-size: 0.9rem;
+            color: var(--medium-gray);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 220px;
+            }
+            .main-content {
+                margin-left: 220px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding: 1rem;
+            }
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+            .dashboard-grid, .quick-actions {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .dashboard-grid, .quick-actions {
+                grid-template-columns: 1fr;
+            }
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .user-profile {
+                margin-top: 1rem;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <div class="sidebar">
+        <div class="logo">
+            <div class="logo-icon">⚕</div>
+            <div class="logo-text">DKUT Medical</div>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="dashboard.html" class="nav-link active">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="appointments.html" class="nav-link">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Appointments</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="consultations.html" class="nav-link">
+                    <i class="fas fa-comment-medical"></i>
+                    <span>Consultations</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="health-records.html" class="nav-link">
+                    <i class="fas fa-file-medical"></i>
+                    <span>Health Records</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="prescriptions.html" class="nav-link">
+                    <i class="fas fa-prescription-bottle-alt"></i>
+                    <span>Prescriptions</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="settings.html" class="nav-link">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="header">
+            <h1>Patient Dashboard</h1>
+            <div class="user-profile">
+                <div class="user-avatar">JD</div>
+                <div class="user-name">John Doe</div>
+            </div>
+        </div>
+
+        <!-- Dashboard Cards -->
+        <div class="dashboard-grid">
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <div class="card-title">Upcoming Appointments</div>
+                    <div class="card-icon blue">
+                        <i class="fas fa-calendar-day"></i>
+                    </div>
+                </div>
+                <div class="card-value">2</div>
+                <div class="card-description">Next appointment in 2 days</div>
+            </div>
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <div class="card-title">Pending Consultations</div>
+                    <div class="card-icon orange">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                </div>
+                <div class="card-value">1</div>
+                <div class="card-description">Waiting for doctor response</div>
+            </div>
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <div class="card-title">Active Prescriptions</div>
+                    <div class="card-icon green">
+                        <i class="fas fa-pills"></i>
+                    </div>
+                </div>
+                <div class="card-value">3</div>
+                <div class="card-description">1 prescription expiring soon</div>
+            </div>
+        </div>
+
+        <!-- Health Status -->
+        <div class="health-status">
+            <div class="status-header">
+                <h2 class="status-title">Health Status</h2>
+                <div class="status-badge good">Good Condition</div>
+            </div>
+            <div class="status-grid">
+                <div class="status-item">
+                    <div class="status-icon" style="background: rgba(0, 102, 204, 0.1); color: var(--primary-blue);">
+                        <i class="fas fa-heartbeat"></i>
+                    </div>
+                    <div class="status-info">
+                        <h4>Heart Rate</h4>
+                        <p>72 bpm (Normal)</p>
+                    </div>
+                </div>
+                <div class="status-item">
+                    <div class="status-icon" style="background: rgba(16, 185, 129, 0.1); color: var(--success-green);">
+                        <i class="fas fa-temperature-low"></i>
+                    </div>
+                    <div class="status-info">
+                        <h4>Last Temperature</h4>
+                        <p>36.6°C (Normal)</p>
+                    </div>
+                </div>
+                <div class="status-item">
+                    <div class="status-icon" style="background: rgba(245, 158, 11, 0.1); color: var(--warning-yellow);">
+                        <i class="fas fa-weight"></i>
+                    </div>
+                    <div class="status-info">
+                        <h4>Weight</h4>
+                        <p>82 kg (Overweight)</p>
+                    </div>
+                </div>
+                <div class="status-item">
+                    <div class="status-icon" style="background: rgba(220, 38, 38, 0.1); color: var(--urgent-red);">
+                        <i class="fas fa-allergies"></i>
+                    </div>
+                    <div class="status-info">
+                        <h4>Allergies</h4>
+                        <p>Penicillin, Peanuts</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upcoming Appointments -->
+        <div class="appointments-section">
+            <div class="section-header">
+                <h2 class="section-title">Upcoming Appointments</h2>
+                <a href="appointments.html" class="section-action">View All</a>
+            </div>
+            <ul class="appointment-list">
+                <li class="appointment-item">
+                    <div class="appointment-info">
+                        <h4>General Checkup</h4>
+                        <p>Dr. Sarah Johnson</p>
+                    </div>
+                    <div class="appointment-time">May 15, 2024 - 10:30 AM</div>
+                    <div class="appointment-status status-scheduled">Scheduled</div>
+                </li>
+                <li class="appointment-item">
+                    <div class="appointment-info">
+                        <h4>Dental Cleaning</h4>
+                        <p>Dr. Michael Chen</p>
+                    </div>
+                    <div class="appointment-time">May 20, 2024 - 2:00 PM</div>
+                    <div class="appointment-status status-scheduled">Scheduled</div>
+                </li>
+                <li class="appointment-item">
+                    <div class="appointment-info">
+                        <h4>Follow-up Consultation</h4>
+                        <p>Dr. Sarah Johnson</p>
+                    </div>
+                    <div class="appointment-time">April 28, 2024 - 11:15 AM</div>
+                    <div class="appointment-status status-completed">Completed</div>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <a href="triage.html" class="action-card">
+                <div class="action-icon">
+                    <i class="fas fa-stethoscope"></i>
+                </div>
+                <h3 class="action-title">Health Assessment</h3>
+                <p class="action-description">Get AI-powered symptom analysis</p>
+            </a>
+            <a href="consultations.html" class="action-card">
+                <div class="action-icon">
+                    <i class="fas fa-comment-medical"></i>
+                </div>
+                <h3 class="action-title">Virtual Consultation</h3>
+                <p class="action-description">Chat with a healthcare provider</p>
+            </a>
+            <a href="appointments.html" class="action-card">
+                <div class="action-icon">
+                    <i class="fas fa-calendar-plus"></i>
+                </div>
+                <h3 class="action-title">Book Appointment</h3>
+                <p class="action-description">Schedule an in-person visit</p>
+            </a>
+            <a href="prescriptions.html" class="action-card">
+                <div class="action-icon">
+                    <i class="fas fa-prescription-bottle-alt"></i>
+                </div>
+                <h3 class="action-title">Prescription Refill</h3>
+                <p class="action-description">Request medication renewal</p>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Simple script to handle active nav items
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function() {
+                document.querySelectorAll('.nav-link').forEach(item => {
+                    item.classList.remove('active');
+                });
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Assessment - DKUT Medical Center</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #0066CC;
+            --secondary-teal: #00A693;
+            --accent-green: #28A745;
+            --urgent-red: #DC2626;
+            --warning-yellow: #F59E0B;
+            --success-green: #10B981;
+            --white: #FFFFFF;
+            --light-gray: #F8FAFC;
+            --medium-gray: #64748B;
+            --dark-gray: #334155;
+            --almost-black: #0F172A;
+            --hero-gradient: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-teal) 100%);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--light-gray);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: var(--hero-gradient);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><radialGradient id="a" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="rgba(255,255,255,0.1)"/><stop offset="100%" stop-color="rgba(255,255,255,0)"/></radialGradient></defs><circle cx="200" cy="200" r="80" fill="url(%23a)"/><circle cx="800" cy="300" r="120" fill="url(%23a)"/></svg>');
+            opacity: 0.6;
+        }
+
+        .header-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: -1rem;
+            left: 2rem;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-md);
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .progress-text {
+            font-weight: 600;
+            color: var(--dark-gray);
+        }
+
+        .step-indicator {
+            color: var(--medium-gray);
+            font-size: 0.9rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--light-gray);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--hero-gradient);
+            width: 25%;
+            transition: width 0.3s ease;
+        }
+
+        /* Assessment Form */
+        .assessment-form {
+            background: white;
+            border-radius: 16px;
+            padding: 2.5rem;
+            box-shadow: var(--shadow-md);
+        }
+
+        .form-step {
+            display: none;
+        }
+
+        .form-step.active {
+            display: block;
+        }
+
+        .step-title {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: var(--almost-black);
+            margin-bottom: 0.5rem;
+        }
+
+        .step-subtitle {
+            color: var(--medium-gray);
+            margin-bottom: 2rem;
+            font-size: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 2rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: var(--dark-gray);
+            margin-bottom: 0.75rem;
+            font-size: 1rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid var(--light-gray);
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+        }
+
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        /* Checkbox and Radio Groups */
+        .checkbox-group,
+        .radio-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 0.75rem;
+        }
+
+        .checkbox-item,
+        .radio-item {
+            background: var(--light-gray);
+            padding: 1rem;
+            border-radius: 12px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .checkbox-item:hover,
+        .radio-item:hover {
+            background: rgba(0, 102, 204, 0.05);
+            border-color: var(--primary-blue);
+        }
+
+        .checkbox-item.selected,
+        .radio-item.selected {
+            background: rgba(0, 102, 204, 0.1);
+            border-color: var(--primary-blue);
+            color: var(--primary-blue);
+        }
+
+        .checkbox-item input,
+        .radio-item input {
+            margin: 0;
+            transform: scale(1.2);
+        }
+
+        /* Symptom Severity Scale */
+        .severity-scale {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--light-gray);
+            padding: 1rem;
+            border-radius: 12px;
+            margin-top: 1rem;
+        }
+
+        .severity-option {
+            flex: 1;
+            text-align: center;
+            cursor: pointer;
+            padding: 0.75rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .severity-option:hover {
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .severity-option.selected {
+            background: white;
+            box-shadow: var(--shadow-md);
+            color: var(--primary-blue);
+        }
+
+        .severity-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--medium-gray);
+        }
+
+        /* Navigation Buttons */
+        .form-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-secondary {
+            background: var(--light-gray);
+            color: var(--dark-gray);
+        }
+
+        .btn-secondary:hover {
+            background: var(--medium-gray);
+            color: white;
+        }
+
+        .btn-primary {
+            background: var(--hero-gradient);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Result Display */
+        .triage-result {
+            background: white;
+            border-radius: 16px;
+            padding: 2.5rem;
+            text-align: center;
+            box-shadow: var(--shadow-md);
+            display: none;
+        }
+
+        .result-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin: 0 auto 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+
+        .result-urgent .result-icon {
+            background: rgba(220, 38, 38, 0.1);
+            color: var(--urgent-red);
+        }
+
+        .result-medium .result-icon {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning-yellow);
+        }
+
+        .result-advice .result-icon {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success-green);
+        }
+
+        .result-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .result-urgent .result-title {
+            color: var(--urgent-red);
+        }
+
+        .result-medium .result-title {
+            color: var(--warning-yellow);
+        }
+
+        .result-advice .result-title {
+            color: var(--success-green);
+        }
+
+        .result-description {
+            font-size: 1.1rem;
+            color: var(--medium-gray);
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .result-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .assessment-form {
+                padding: 1.5rem;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .checkbox-group,
+            .radio-group {
+                grid-template-columns: 1fr;
+            }
+
+            .form-navigation {
+                flex-direction: column;
+            }
+
+            .result-actions {
+                flex-direction: column;
+            }
+
+            .back-btn {
+                position: static;
+                margin-bottom: 1rem;
+                display: inline-block;
+                width: fit-content;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <a href="index.html" class="back-btn">← Back to Home</a>
+            <h1>🩺 Health Assessment</h1>
+            <p>Our AI-powered system will analyze your symptoms and provide personalized health guidance</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Progress Bar -->
+        <div class="progress-container">
+            <div class="progress-header">
+                <span class="progress-text">Assessment Progress</span>
+                <span class="step-indicator">Step <span id="currentStep">1</span> of 4</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <!-- Assessment Form -->
+        <div class="assessment-form">
+            <!-- Step 1: Personal Information -->
+            <div class="form-step active" id="step1">
+                <h2 class="step-title">Personal Information</h2>
+                <p class="step-subtitle">Help us understand your basic health profile</p>
+
+                <div class="form-group">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" class="form-input" id="fullName" placeholder="Enter your full name" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Age</label>
+                    <input type="number" class="form-input" id="age" placeholder="Enter your age" min="1" max="120" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Gender</label>
+                    <div class="radio-group">
+                        <div class="radio-item" onclick="selectRadio('gender', 'male')">
+                            <input type="radio" name="gender" value="male" id="male">
+                            <span>Male</span>
+                        </div>
+                        <div class="radio-item" onclick="selectRadio('gender', 'female')">
+                            <input type="radio" name="gender" value="female" id="female">
+                            <span>Female</span>
+                        </div>
+                        <div class="radio-item" onclick="selectRadio('gender', 'other')">
+                            <input type="radio" name="gender" value="other" id="other">
+                            <span>Prefer not to say</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Student ID (Optional)</label>
+                    <input type="text" class="form-input" id="studentId" placeholder="e.g., DKUT/2024/001">
+                </div>
+            </div>
+
+            <!-- Step 2: Current Symptoms -->
+            <div class="form-step" id="step2">
+                <h2 class="step-title">Current Symptoms</h2>
+                <p class="step-subtitle">Please describe your current health concerns</p>
+
+                <div class="form-group">
+                    <label class="form-label">Primary Symptoms</label>
+                    <textarea class="form-input form-textarea" id="symptoms" placeholder="Describe your symptoms in detail (e.g., headache, fever, cough, pain location, etc.)" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">When did symptoms start?</label>
+                    <div class="radio-group">
+                        <div class="radio-item" onclick="selectRadio('symptomDuration', 'today')">
+                            <input type="radio" name="symptomDuration" value="today" id="today">
+                            <span>Today</span>
+                        </div>
+                        <div class="radio-item" onclick="selectRadio('symptomDuration', '1-3days')">
+                            <input type="radio" name="symptomDuration" value="1-3days" id="1-3days">
+                            <span>1-3 days ago</span>
+                        </div>
+                        <div class="radio-item" onclick="selectRadio('symptomDuration', 'week')">
+                            <input type="radio" name="symptomDuration" value="week" id="week">
+                            <span>About a week ago</span>
+                        </div>
+                        <div class="radio-item" onclick="selectRadio('symptomDuration', 'longer')">
+                            <input type="radio" name="symptomDuration" value="longer" id="longer">
+                            <span>More than a week</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Symptom Severity (1 = Mild, 5 = Severe)</label>
+                    <div class="severity-scale">
+                        <div class="severity-option" onclick="selectSeverity(1)" data-severity="1">1</div>
+                        <div class="severity-option" onclick="selectSeverity(2)" data-severity="2">2</div>
+                        <div class="severity-option" onclick="selectSeverity(3)" data-severity="3">3</div>
+                        <div class="severity-option" onclick="selectSeverity(4)" data-severity="4">4</div>
+                        <div class="severity-option" onclick="selectSeverity(5)" data-severity="5">5</div>
+                    </div>
+                    <div class="severity-labels">
+                        <span>Mild</span>
+                        <span>Moderate</span>
+                        <span>Severe</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3: Additional Information -->
+            <div class="form-step" id="step3">
+                <h2 class="step-title">Additional Information</h2>
+                <p class="step-subtitle">Help us provide more accurate recommendations</p>
+
+                <div class="form-group">
+                    <label class="form-label">Do you have any of these conditions? (Check all that apply)</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item" onclick="toggleCheckbox('diabetes')">
+                            <input type="checkbox" id="diabetes" value="diabetes">
+                            <span>Diabetes</span>
+                        </div>
+                        <div class="checkbox-item" onclick="toggleCheckbox('hypertension')">
+                            <input type="checkbox" id="hypertension" value="hypertension">
+                            <span>High Blood Pressure</span>
+                        </div>
+                        <div class="checkbox-item" onclick="toggleCheckbox('asthma')">
+                            <input type="checkbox" id="asthma" value="asthma">
+                            <span>Asthma</span>
+                        </div>
+                        <div class="checkbox-item" onclick="toggleCheckbox('heartDisease')">
+                            <input type="checkbox" id="heartDisease" value="heartDisease">
+                            <span>Heart Disease</span>
+                        </div>
+                        <div class="checkbox-item" onclick="toggleCheckbox('allergies')">
+                            <input type="checkbox" id="allergies" value="allergies">
+                            <span>Known Allergies</span>
+                        </div>
+                        <div class="checkbox-item" onclick="toggleCheckbox('none')">
+                            <input type="checkbox" id="none" value="none">
+                            <span>None of the above</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Current Medications (Optional)</label>
+                    <textarea class="form-input" id="medications" placeholder="List any medications you're currently taking"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Additional Comments</label>
+                    <textarea class="form-input" id="additionalInfo" placeholder="Any other information you'd like to share"></textarea>
+                </div>
+            </div>
+
+            <!-- Step 4: Review -->
+            <div class="form-step" id="step4">
+                <h2 class="step-title">Review Your Information</h2>
+                <p class="step-subtitle">Please review your information before submitting</p>
+
+                <div id="reviewContent">
+                    <!-- Review content will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="form-navigation">
+                <button type="button" class="btn btn-secondary" id="prevBtn" onclick="changeStep(-1)" style="display: none;">
+                    ← Previous
+                </button>
+                <button type="button" class="btn btn-primary" id="nextBtn" onclick="changeStep(1)">
+                    Next →
+                </button>
+            </div>
+        </div>
+
+        <!-- Triage Result -->
+        <div class="triage-result" id="triageResult">
+            <div class="result-icon" id="resultIcon">🩺</div>
+            <h2 class="result-title" id="resultTitle">Assessment Complete</h2>
+            <p class="result-description" id="resultDescription">
+                Based on your symptoms and information provided, here's our recommendation.
+            </p>
+            <div class="result-actions">
+                <a href="consultations.html" class="btn btn-primary">Start Consultation</a>
+                <a href="appointments.html" class="btn btn-secondary">Book Appointment</a>
+                <button class="btn btn-secondary" onclick="restartAssessment()">New Assessment</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        let selectedSeverity = 0;
+        let assessmentData = {};
+
+        function updateProgress() {
+            const progressFill = document.getElementById('progressFill');
+            const stepIndicator = document.getElementById('currentStep');
+            const percentage = (currentStep / 4) * 100;
+
+            progressFill.style.width = percentage + '%';
+            stepIndicator.textContent = currentStep;
+        }
+
+        function selectRadio(name, value) {
+            // Clear all radio items in the group
+            document.querySelectorAll(`input[name="${name}"]`).forEach(input => {
+                input.parentElement.classList.remove('selected');
+                input.checked = false;
+            });
+
+            // Select the clicked item
+            const selectedInput = document.getElementById(value);
+            selectedInput.checked = true;
+            selectedInput.parentElement.classList.add('selected');
+        }
+
+        function selectSeverity(severity) {
+            // Clear all severity options
+            document.querySelectorAll('.severity-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+
+            // Select the clicked severity
+            const selectedOption = document.querySelector(`[data-severity="${severity}"]`);
+            selectedOption.classList.add('selected');
+            selectedSeverity = severity;
+        }
+
+        function toggleCheckbox(id) {
+            const checkbox = document.getElementById(id);
+            const checkboxItem = checkbox.parentElement;
+
+            if (id === 'none') {
+                // If "None" is selected, uncheck all others
+                if (checkbox.checked) {
+                    document.querySelectorAll('.checkbox-item input[type="checkbox"]').forEach(cb => {
+                        if (cb.id !== 'none') {
+                            cb.checked = false;
+                            cb.parentElement.classList.remove('selected');
+                        }
+                    });
+                }
+            } else {
+                // If any condition is selected, uncheck "None"
+                if (checkbox.checked) {
+                    const noneCheckbox = document.getElementById('none');
+                    noneCheckbox.checked = false;
+                    noneCheckbox.parentElement.classList.remove('selected');
+                }
+            }
+
+            checkbox.checked = !checkbox.checked;
+
+            if (checkbox.checked) {
+                checkboxItem.classList.add('selected');
+            } else {
+                checkboxItem.classList.remove('selected');
+            }
+        }
+
+        function validateStep(step) {
+            switch (step) {
+                case 1:
+                    const fullName = document.getElementById('fullName').value.trim();
+                    const age = document.getElementById('age').value;
+                    const gender = document.querySelector('input[name="gender"]:checked');
+
+                    if (!fullName) {
+                        alert('Please enter your full name');
+                        return false;
+                    }
+                    if (!age || age < 1 || age > 120) {
+                        alert('Please enter a valid age');
+                        return false;
+                    }
+                    if (!gender) {
+                        alert('Please select your gender');
+                        return false;
+                    }
+                    return true;
+
+                case 2:
+                    const symptoms = document.getElementById('symptoms').value.trim();
+                    const duration = document.querySelector('input[name="symptomDuration"]:checked');
+
+                    if (!symptoms) {
+                        alert('Please describe your symptoms');
+                        return false;
+                    }
+                    if (!duration) {
+                        alert('Please select when your symptoms started');
+                        return false;
+                    }
+                    if (selectedSeverity === 0) {
+                        alert('Please rate your symptom severity');
+                        return false;
+                    }
+                    return true;
+
+                case 3:
+                    // Step 3 is optional, always valid
+                    return true;
+
+                case 4:
+                    return true;
+
+                default:
+                    return true;
+            }
+        }
+
+        function collectData() {
+            // Personal Information
+            assessmentData.fullName = document.getElementById('fullName').value.trim();
+            assessmentData.age = document.getElementById('age').value;
+            assessmentData.gender = document.querySelector('input[name="gender"]:checked')?.value || '';
+            assessmentData.studentId = document.getElementById('studentId').value.trim();
+
+            // Symptoms
+            assessmentData.symptoms = document.getElementById('symptoms').value.trim();
+            assessmentData.symptomDuration = document.querySelector('input[name="symptomDuration"]:checked')?.value || '';
+            assessmentData.severity = selectedSeverity;
+
+            // Additional Information
+            const conditions = [];
+            document.querySelectorAll('.checkbox-item input[type="checkbox"]:checked').forEach(checkbox => {
+                conditions.push(checkbox.value);
+            });
+            assessmentData.conditions = conditions;
+            assessmentData.medications = document.getElementById('medications').value.trim();
+            assessmentData.additionalInfo = document.getElementById('additionalInfo').value.trim();
+        }
+
+        function populateReview() {
+            collectData();
+
+            const reviewContent = document.getElementById('reviewContent');
+
+            // Format gender display
+            const genderDisplay = assessmentData.gender === 'other' ? 'Prefer not to say' :
+                assessmentData.gender.charAt(0).toUpperCase() + assessmentData.gender.slice(1);
+
+            // Format duration display
+            const durationMap = {
+                'today': 'Today',
+                '1-3days': '1-3 days ago',
+                'week': 'About a week ago',
+                'longer': 'More than a week ago'
+            };
+
+            // Format conditions display
+            const conditionsDisplay = assessmentData.conditions.length > 0 ?
+                assessmentData.conditions.map(condition => {
+                    const conditionMap = {
+                        'diabetes': 'Diabetes',
+                        'hypertension': 'High Blood Pressure',
+                        'asthma': 'Asthma',
+                        'heartDisease': 'Heart Disease',
+                        'allergies': 'Known Allergies',
+                        'none': 'None of the above'
+                    };
+                    return conditionMap[condition] || condition;
+                }).join(', ') : 'None specified';
+
+            reviewContent.innerHTML = `
+                <div class="review-section">
+                    <h3>Personal Information</h3>
+                    <div class="review-item">
+                        <span class="review-label">Name:</span>
+                        <span class="review-value">${assessmentData.fullName}</span>
+                    </div>
+                    <div class="review-item">
+                        <span class="review-label">Age:</span>
+                        <span class="review-value">${assessmentData.age} years old</span>
+                    </div>
+                    <div class="review-item">
+                        <span class="review-label">Gender:</span>
+                        <span class="review-value">${genderDisplay}</span>
+                    </div>
+                    ${assessmentData.studentId ? `
+                    <div class="review-item">
+                        <span class="review-label">Student ID:</span>
+                        <span class="review-value">${assessmentData.studentId}</span>
+                    </div>` : ''}
+                </div>
+                
+                <div class="review-section">
+                    <h3>Symptoms</h3>
+                    <div class="review-item">
+                        <span class="review-label">Description:</span>
+                        <span class="review-value">${assessmentData.symptoms}</span>
+                    </div>
+                    <div class="review-item">
+                        <span class="review-label">Started:</span>
+                        <span class="review-value">${durationMap[assessmentData.symptomDuration]}</span>
+                    </div>
+                    <div class="review-item">
+                        <span class="review-label">Severity:</span>
+                        <span class="review-value">${assessmentData.severity}/5</span>
+                    </div>
+                </div>
+                
+                <div class="review-section">
+                    <h3>Additional Information</h3>
+                    <div class="review-item">
+                        <span class="review-label">Conditions:</span>
+                        <span class="review-value">${conditionsDisplay}</span>
+                    </div>
+                    ${assessmentData.medications ? `
+                    <div class="review-item">
+                        <span class="review-label">Medications:</span>
+                        <span class="review-value">${assessmentData.medications}</span>
+                    </div>` : ''}
+                    ${assessmentData.additionalInfo ? `
+                    <div class="review-item">
+                        <span class="review-label">Additional Comments:</span>
+                        <span class="review-value">${assessmentData.additionalInfo}</span>
+                    </div>` : ''}
+                </div>
+            `;
+        }
+
+        function showTriageResult() {
+            // Determine triage level based on severity and other factors
+            let triageLevel, triageTitle, triageDescription, triageIcon;
+
+            if (selectedSeverity >= 4) {
+                triageLevel = 'urgent';
+                triageTitle = 'Urgent Care Recommended';
+                triageDescription = 'Based on your symptoms, we recommend seeking medical attention as soon as possible. Please visit the emergency department or call campus health services immediately.';
+                triageIcon = '⚠️';
+            } else if (selectedSeverity >= 2) {
+                triageLevel = 'medium';
+                triageTitle = 'Schedule an Appointment';
+                triageDescription = 'Your symptoms suggest you should see a healthcare provider within the next 24-48 hours. You can book an appointment with our campus health center.';
+                triageIcon = '🕒';
+            } else {
+                triageLevel = 'advice';
+                triageTitle = 'Self-Care Recommended';
+                triageDescription = 'Your symptoms appear mild. Try rest, hydration, and over-the-counter remedies as appropriate. If symptoms persist or worsen, please contact health services.';
+                triageIcon = '👍';
+            }
+
+            // Update result display
+            const resultContainer = document.getElementById('triageResult');
+            resultContainer.className = `triage-result result-${triageLevel}`;
+            document.getElementById('resultIcon').textContent = triageIcon;
+            document.getElementById('resultTitle').textContent = triageTitle;
+            document.getElementById('resultDescription').textContent = triageDescription;
+
+            // Hide form and show result
+            document.querySelector('.assessment-form').style.display = 'none';
+            resultContainer.style.display = 'block';
+        }
+
+        function changeStep(direction) {
+            const newStep = currentStep + direction;
+
+            // Validate current step before proceeding
+            if (direction > 0 && !validateStep(currentStep)) {
+                return;
+            }
+
+            // If moving to step 4 (review), collect and display data
+            if (newStep === 4) {
+                populateReview();
+            }
+
+            // If submitting (next from step 4)
+            if (newStep > 4) {
+                showTriageResult();
+                return;
+            }
+
+            // Update current step
+            document.getElementById(`step${currentStep}`).classList.remove('active');
+            currentStep = newStep;
+            document.getElementById(`step${currentStep}`).classList.add('active');
+
+            // Update navigation buttons
+            document.getElementById('prevBtn').style.display = currentStep === 1 ? 'none' : 'inline-flex';
+            document.getElementById('nextBtn').textContent = currentStep === 4 ? 'Submit Assessment' : 'Next →';
+
+            // Update progress
+            updateProgress();
+        }
+
+        function restartAssessment() {
+            // Reset form
+            document.querySelectorAll('.form-input').forEach(input => {
+                input.value = '';
+            });
+
+            document.querySelectorAll('input[type="radio"]').forEach(radio => {
+                radio.checked = false;
+                radio.parentElement.classList.remove('selected');
+            });
+
+            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                checkbox.checked = false;
+                checkbox.parentElement.classList.remove('selected');
+            });
+
+            document.querySelectorAll('.severity-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+
+            // Reset variables
+            currentStep = 1;
+            selectedSeverity = 0;
+            assessmentData = {};
+
+            // Show form and hide result
+            document.querySelector('.assessment-form').style.display = 'block';
+            document.getElementById('triageResult').style.display = 'none';
+
+            // Reset steps
+            document.querySelectorAll('.form-step').forEach(step => {
+                step.classList.remove('active');
+            });
+            document.getElementById('step1').classList.add('active');
+
+            // Reset navigation buttons
+            document.getElementById('prevBtn').style.display = 'none';
+            document.getElementById('nextBtn').textContent = 'Next →';
+
+            // Reset progress
+            updateProgress();
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updateProgress();
+
+            // Make radio/checkbox items clickable anywhere
+            document.querySelectorAll('.radio-item, .checkbox-item').forEach(item => {
+                item.style.cursor = 'pointer';
+            });
+
+            // Submit form on Enter key in last step
+            document.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && currentStep === 4) {
+                    changeStep(1);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

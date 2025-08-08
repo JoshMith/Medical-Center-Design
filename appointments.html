@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Appointment - DKUT Medical Center</title>
+    <style>
+        /* Shared Styles (same as previous pages) */
+        :root {
+            --primary-blue: #0066CC;
+            --secondary-teal: #00A693;
+            --accent-green: #28A745;
+            --urgent-red: #DC2626;
+            --warning-yellow: #F59E0B;
+            --success-green: #10B981;
+            --white: #FFFFFF;
+            --light-gray: #F8FAFC;
+            --medium-gray: #64748B;
+            --dark-gray: #334155;
+            --almost-black: #0F172A;
+            --hero-gradient: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-teal) 100%);
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--light-gray);
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Navigation (same as dashboard) */
+        .sidebar {
+            width: 260px;
+            background: var(--white);
+            height: 100vh;
+            position: fixed;
+            box-shadow: var(--shadow-md);
+            padding: 1.5rem 0;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 260px;
+            padding: 2rem;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 1.75rem;
+            color: var(--almost-black);
+        }
+
+        /* Appointment Booking Container */
+        .booking-container {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 2rem;
+        }
+
+        /* Doctor Selection */
+        .doctor-selection {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            height: fit-content;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--almost-black);
+            margin-bottom: 1.5rem;
+        }
+
+        .search-box {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border: 2px solid var(--light-gray);
+            border-radius: 12px;
+            font-size: 0.95rem;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--medium-gray);
+        }
+
+        .doctor-list {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .doctor-card {
+            display: flex;
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .doctor-card:hover {
+            background: rgba(0, 102, 204, 0.05);
+            border-color: rgba(0, 102, 204, 0.2);
+        }
+
+        .doctor-card.selected {
+            background: rgba(0, 102, 204, 0.1);
+            border-color: var(--primary-blue);
+        }
+
+        .doctor-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--hero-gradient);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            font-weight: 600;
+            font-size: 1.25rem;
+        }
+
+        .doctor-info h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+            color: var(--dark-gray);
+        }
+
+        .doctor-specialty {
+            font-size: 0.9rem;
+            color: var(--medium-gray);
+            margin-bottom: 0.5rem;
+        }
+
+        .doctor-rating {
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+            color: var(--warning-yellow);
+        }
+
+        /* Calendar Section */
+        .calendar-section {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .month-navigation {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: none;
+            background: var(--light-gray);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 0.5rem;
+        }
+
+        .nav-btn:hover {
+            background: var(--medium-gray);
+            color: white;
+        }
+
+        .current-month {
+            font-weight: 600;
+            min-width: 150px;
+            text-align: center;
+        }
+
+        .weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            text-align: center;
+            margin-bottom: 1rem;
+            font-weight: 500;
+            color: var(--medium-gray);
+        }
+
+        .days-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.5rem;
+        }
+
+        .day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .day:hover {
+            background: rgba(0, 102, 204, 0.1);
+        }
+
+        .day.other-month {
+            color: var(--medium-gray);
+            opacity: 0.5;
+        }
+
+        .day.today {
+            font-weight: 600;
+            color: var(--primary-blue);
+        }
+
+        .day.selected {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .day.unavailable {
+            color: var(--medium-gray);
+            opacity: 0.5;
+            cursor: not-allowed;
+            text-decoration: line-through;
+        }
+
+        /* Time Slots */
+        .time-slots {
+            margin-top: 2rem;
+        }
+
+        .time-slots-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .time-slot-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 0.75rem;
+        }
+
+        .time-slot {
+            padding: 0.75rem;
+            border-radius: 8px;
+            background: var(--light-gray);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .time-slot:hover {
+            background: rgba(0, 102, 204, 0.1);
+        }
+
+        .time-slot.selected {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .time-slot.unavailable {
+            opacity: 0.5;
+            cursor: not-allowed;
+            text-decoration: line-through;
+        }
+
+        /* Appointment Details */
+        .appointment-details {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .detail-row {
+            display: flex;
+            margin-bottom: 1rem;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: var(--dark-gray);
+            min-width: 120px;
+        }
+
+        .detail-value {
+            color: var(--medium-gray);
+        }
+
+        .symptoms-input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid var(--light-gray);
+            border-radius: 12px;
+            min-height: 100px;
+            margin-top: 0.5rem;
+            resize: vertical;
+        }
+
+        .book-btn {
+            width: 100%;
+            padding: 1rem;
+            background: var(--hero-gradient);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            margin-top: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .book-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .book-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .booking-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding: 1rem;
+            }
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .days-grid {
+                gap: 0.25rem;
+            }
+            .time-slot-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- Sidebar Navigation (same as dashboard) -->
+    <div class="sidebar">
+        <div class="logo">
+            <div class="logo-icon">⚕</div>
+            <div class="logo-text">DKUT Medical</div>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="dashboard.html" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="appointments.html" class="nav-link active">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Appointments</span>
+                </a>
+            </li>
+            <!-- Other nav items -->
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="header">
+            <h1>Book Appointment</h1>
+        </div>
+
+        <div class="booking-container">
+            <!-- Doctor Selection -->
+            <div class="doctor-selection">
+                <h2 class="section-title">Select Doctor</h2>
+                <div class="search-box">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" class="search-input" placeholder="Search doctors...">
+                </div>
+                <div class="doctor-list">
+                    <div class="doctor-card selected">
+                        <div class="doctor-avatar">SJ</div>
+                        <div class="doctor-info">
+                            <h3>Dr. Sarah Johnson</h3>
+                            <p class="doctor-specialty">General Practitioner</p>
+                            <div class="doctor-rating">
+                                <i class="fas fa-star"></i> 4.8 (120 reviews)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="doctor-card">
+                        <div class="doctor-avatar">MC</div>
+                        <div class="doctor-info">
+                            <h3>Dr. Michael Chen</h3>
+                            <p class="doctor-specialty">Dentist</p>
+                            <div class="doctor-rating">
+                                <i class="fas fa-star"></i> 4.9 (85 reviews)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="doctor-card">
+                        <div class="doctor-avatar">AP</div>
+                        <div class="doctor-info">
+                            <h3>Dr. Amina Patel</h3>
+                            <p class="doctor-specialty">Dermatologist</p>
+                            <div class="doctor-rating">
+                                <i class="fas fa-star"></i> 4.7 (64 reviews)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="doctor-card">
+                        <div class="doctor-avatar">RW</div>
+                        <div class="doctor-info">
+                            <h3>Dr. Robert Williams</h3>
+                            <p class="doctor-specialty">Psychiatrist</p>
+                            <div class="doctor-rating">
+                                <i class="fas fa-star"></i> 4.6 (42 reviews)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Calendar Section -->
+            <div class="calendar-section">
+                <div class="calendar-header">
+                    <h2 class="section-title">Select Date & Time</h2>
+                    <div class="month-navigation">
+                        <button class="nav-btn">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <div class="current-month">May 2024</div>
+                        <button class="nav-btn">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="weekdays">
+                    <div>Sun</div>
+                    <div>Mon</div>
+                    <div>Tue</div>
+                    <div>Wed</div>
+                    <div>Thu</div>
+                    <div>Fri</div>
+                    <div>Sat</div>
+                </div>
+
+                <div class="days-grid">
+                    <!-- These would be generated dynamically in a real app -->
+                    <div class="day other-month">28</div>
+                    <div class="day other-month">29</div>
+                    <div class="day other-month">30</div>
+                    <div class="day">1</div>
+                    <div class="day">2</div>
+                    <div class="day">3</div>
+                    <div class="day">4</div>
+                    <div class="day">5</div>
+                    <div class="day">6</div>
+                    <div class="day">7</div>
+                    <div class="day">8</div>
+                    <div class="day">9</div>
+                    <div class="day">10</div>
+                    <div class="day">11</div>
+                    <div class="day">12</div>
+                    <div class="day">13</div>
+                    <div class="day">14</div>
+                    <div class="day today selected">15</div>
+                    <div class="day">16</div>
+                    <div class="day">17</div>
+                    <div class="day">18</div>
+                    <div class="day">19</div>
+                    <div class="day">20</div>
+                    <div class="day">21</div>
+                    <div class="day">22</div>
+                    <div class="day">23</div>
+                    <div class="day">24</div>
+                    <div class="day">25</div>
+                    <div class="day">26</div>
+                    <div class="day">27</div>
+                    <div class="day">28</div>
+                    <div class="day">29</div>
+                    <div class="day">30</div>
+                    <div class="day">31</div>
+                    <div class="day other-month">1</div>
+                </div>
+
+                <div class="time-slots">
+                    <div class="time-slots-header">
+                        <h3 class="section-title">Available Time Slots</h3>
+                        <div class="doctor-info">
+                            <small>Dr. Sarah Johnson</small>
+                        </div>
+                    </div>
+                    <div class="time-slot-grid">
+                        <div class="time-slot unavailable">8:00 AM</div>
+                        <div class="time-slot unavailable">8:30 AM</div>
+                        <div class="time-slot">9:00 AM</div>
+                        <div class="time-slot">9:30 AM</div>
+                        <div class="time-slot selected">10:00 AM</div>
+                        <div class="time-slot">10:30 AM</div>
+                        <div class="time-slot">11:00 AM</div>
+                        <div class="time-slot">11:30 AM</div>
+                        <div class="time-slot unavailable">12:00 PM</div>
+                        <div class="time-slot unavailable">12:30 PM</div>
+                        <div class="time-slot">1:00 PM</div>
+                        <div class="time-slot">1:30 PM</div>
+                        <div class="time-slot">2:00 PM</div>
+                        <div class="time-slot">2:30 PM</div>
+                        <div class="time-slot">3:00 PM</div>
+                        <div class="time-slot">3:30 PM</div>
+                    </div>
+                </div>
+
+                <div class="appointment-details">
+                    <h2 class="section-title">Appointment Details</h2>
+                    <div class="detail-row">
+                        <div class="detail-label">Doctor:</div>
+                        <div class="detail-value">Dr. Sarah Johnson</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Date:</div>
+                        <div class="detail-value">May 15, 2024</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Time:</div>
+                        <div class="detail-value">10:00 AM - 10:30 AM</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Location:</div>
+                        <div class="detail-value">DKUT Medical Center, Room 205</div>
+                    </div>
+                    <div class="detail-row" style="flex-direction: column;">
+                        <div class="detail-label">Reason for Visit:</div>
+                        <textarea class="symptoms-input" placeholder="Describe your symptoms or reason for appointment"></textarea>
+                    </div>
+                    <button class="book-btn">Confirm Appointment</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simple script to handle calendar and time slot selection
+        document.querySelectorAll('.day:not(.other-month):not(.unavailable)').forEach(day => {
+            day.addEventListener('click', function() {
+                document.querySelectorAll('.day').forEach(d => d.classList.remove('selected'));
+                this.classList.add('selected');
+                // In a real app, we'd fetch available time slots for the selected date
+            });
+        });
+
+        document.querySelectorAll('.time-slot:not(.unavailable)').forEach(slot => {
+            slot.addEventListener('click', function() {
+                document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
+                this.classList.add('selected');
+            });
+        });
+
+        document.querySelectorAll('.doctor-card').forEach(card => {
+            card.addEventListener('click', function() {
+                document.querySelectorAll('.doctor-card').forEach(c => c.classList.remove('selected'));
+                this.classList.add('selected');
+                // In a real app, we'd fetch available dates for the selected doctor
+            });
+        });
+    </script>
+</body>
+</html>

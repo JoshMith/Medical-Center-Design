@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Records - DKUT Medical Center</title>
+    <style>
+        /* Shared Styles (same as previous pages) */
+        :root {
+            --primary-blue: #0066CC;
+            --secondary-teal: #00A693;
+            --accent-green: #28A745;
+            --urgent-red: #DC2626;
+            --warning-yellow: #F59E0B;
+            --success-green: #10B981;
+            --white: #FFFFFF;
+            --light-gray: #F8FAFC;
+            --medium-gray: #64748B;
+            --dark-gray: #334155;
+            --almost-black: #0F172A;
+            --hero-gradient: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-teal) 100%);
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--light-gray);
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Navigation (same as dashboard) */
+        .sidebar {
+            width: 260px;
+            background: var(--white);
+            height: 100vh;
+            position: fixed;
+            box-shadow: var(--shadow-md);
+            padding: 1.5rem 0;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 260px;
+            padding: 2rem;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 1.75rem;
+            color: var(--almost-black);
+        }
+
+        /* Patient Profile */
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            background: var(--white);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .patient-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--hero-gradient);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1.5rem;
+            font-weight: 600;
+            font-size: 1.75rem;
+        }
+
+        .patient-info h2 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--almost-black);
+        }
+
+        .patient-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+            color: var(--medium-gray);
+        }
+
+        .meta-item i {
+            margin-right: 0.5rem;
+        }
+
+        .patient-actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .action-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .action-btn.primary {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .action-btn.secondary {
+            background: var(--light-gray);
+            color: var(--dark-gray);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* Records Navigation */
+        .records-nav {
+            display: flex;
+            background: var(--light-gray);
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 2rem;
+            overflow-x: auto;
+        }
+
+        .record-tab {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .record-tab.active {
+            background: white;
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* Medical Records */
+        .records-container {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .record-section {
+            margin-bottom: 2rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--almost-black);
+        }
+
+        .section-action {
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .record-item {
+            display: flex;
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+            border: 1px solid var(--light-gray);
+        }
+
+        .record-item:hover {
+            border-color: var(--primary-blue);
+        }
+
+        .record-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: rgba(0, 102, 204, 0.1);
+            color: var(--primary-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .record-info {
+            flex: 1;
+        }
+
+        .record-info h3 {
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+            color: var(--dark-gray);
+        }
+
+        .record-info p {
+            font-size: 0.9rem;
+            color: var(--medium-gray);
+        }
+
+        .record-meta {
+            display: flex;
+            align-items: center;
+            font-size: 0.85rem;
+            color: var(--medium-gray);
+            margin-top: 0.5rem;
+        }
+
+        .record-meta i {
+            margin-right: 0.5rem;
+        }
+
+        .record-date {
+            margin-right: 1rem;
+        }
+
+        /* Vital Signs */
+        .vitals-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .vital-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 1rem;
+            border: 1px solid var(--light-gray);
+            text-align: center;
+        }
+
+        .vital-title {
+            font-size: 0.9rem;
+            color: var(--medium-gray);
+            margin-bottom: 0.5rem;
+        }
+
+        .vital-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--almost-black);
+            margin-bottom: 0.25rem;
+        }
+
+        .vital-status {
+            font-size: 0.8rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            display: inline-block;
+        }
+
+        .status-normal {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success-green);
+        }
+
+        .status-warning {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning-yellow);
+        }
+
+        .status-danger {
+            background: rgba(220, 38, 38, 0.1);
+            color: var(--urgent-red);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 220px;
+            }
+            .main-content {
+                margin-left: 220px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding: 1rem;
+            }
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+            .patient-profile {
+                flex-direction: column;
+                text-align: center;
+            }
+            .patient-avatar {
+                margin-right: 0;
+                margin-bottom: 1rem;
+            }
+            .patient-meta {
+                justify-content: center;
+            }
+            .patient-actions {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .vitals-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .record-tab {
+                padding: 0.75rem 1rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- Sidebar Navigation (same as dashboard) -->
+    <div class="sidebar">
+        <div class="logo">
+            <div class="logo-icon">⚕</div>
+            <div class="logo-text">DKUT Medical</div>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="dashboard.html" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="health-records.html" class="nav-link active">
+                    <i class="fas fa-file-medical"></i>
+                    <span>Health Records</span>
+                </a>
+            </li>
+            <!-- Other nav items -->
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="header">
+            <h1>Medical Records</h1>
+        </div>
+
+        <!-- Patient Profile -->
+        <div class="patient-profile">
+            <div class="patient-avatar">JD</div>
+            <div class="patient-info">
+                <h2>John Doe</h2>
+                <div class="patient-meta">
+                    <div class="meta-item">
+                        <i class="fas fa-id-card"></i> DKUT/2024/001
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-birthday-cake"></i> 22 years old
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-venus-mars"></i> Male
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-heartbeat"></i> Blood Type: A+
+                    </div>
+                </div>
+                <div class="patient-actions">
+                    <button class="action-btn primary">
+                        <i class="fas fa-download"></i> Export Records
+                    </button>
+                    <button class="action-btn secondary">
+                        <i class="fas fa-print"></i> Print Summary
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Records Navigation -->
+        <div class="records-nav">
+            <button class="record-tab active">Overview</button>
+            <button class="record-tab">Consultations</button>
+            <button class="record-tab">Prescriptions</button>
+            <button class="record-tab">Lab Results</button>
+            <button class="record-tab">Immunizations</button>
+            <button class="record-tab">Allergies</button>
+            <button class="record-tab">Medical History</button>
+        </div>
+
+        <!-- Records Container -->
+        <div class="records-container">
+            <!-- Overview Section -->
+            <div class="record-section">
+                <div class="section-header">
+                    <h2 class="section-title">Vital Signs</h2>
+                    <a href="#" class="section-action">View History</a>
+                </div>
+                <div class="vitals-grid">
+                    <div class="vital-card">
+                        <div class="vital-title">Blood Pressure</div>
+                        <div class="vital-value">120/80</div>
+                        <div class="vital-status status-normal">Normal</div>
+                    </div>
+                    <div class="vital-card">
+                        <div class="vital-title">Heart Rate</div>
+                        <div class="vital-value">72</div>
+                        <div class="vital-status status-normal">Normal</div>
+                    </div>
+                    <div class="vital-card">
+                        <div class="vital-title">Temperature</div>
+                        <div class="vital-value">36.6°C</div>
+                        <div class="vital-status status-normal">Normal</div>
+                    </div>
+                    <div class="vital-card">
+                        <div class="vital-title">Weight</div>
+                        <div class="vital-value">82 kg</div>
+                        <div class="vital-status status-warning">Overweight</div>
+                    </div>
+                    <div class="vital-card">
+                        <div class="vital-title">Height</div>
+                        <div class="vital-value">175 cm</div>
+                        <div class="vital-status status-normal">Normal</div>
+                    </div>
+                    <div class="vital-card">
+                        <div class="vital-title">BMI</div>
+                        <div class="vital-value">26.8</div>
+                        <div class="vital-status status-warning">Overweight</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Consultations -->
+            <div class="record-section">
+                <div class="section-header">
+                    <h2 class="section-title">Recent Consultations</h2>
+                    <a href="#" class="section-action">View All</a>
+                </div>
+                <div class="record-item">
+                    <div class="record-icon">
+                        <i class="fas fa-comment-medical"></i>
+                    </div>
+                    <div class="record-info">
+                        <h3>Follow-up Consultation</h3>
+                        <p>Follow-up for persistent headaches and fever. Recommended additional tests.</p>
+                        <div class="record-meta">
+                            <span class="record-date">
+                                <i class="far fa-calendar"></i> May 10, 2024
+                            </span>
+                            <span>
+                                <i class="fas fa-user-md"></i> Dr. Sarah Johnson
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="record-item">
+                    <div class="record-icon">
+                        <i class="fas fa-comment-medical"></i>
+                    </div>
+                    <div class="record-info">
+                        <h3>Initial Consultation</h3>
+                        <p>Patient reported persistent headaches and mild fever for 3 days.</p>
+                        <div class="record-meta">
+                            <span class="record-date">
+                                <i class="far fa-calendar"></i> May 3, 2024
+                            </span>
+                            <span>
+                                <i class="fas fa-user-md"></i> Dr. Sarah Johnson
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active Prescriptions -->
+            <div class="record-section">
+                <div class="section-header">
+                    <h2 class="section-title">Active Prescriptions</h2>
+                    <a href="#" class="section-action">View All</a>
+                </div>
+                <div class="record-item">
+                    <div class="record-icon">
+                        <i class="fas fa-prescription-bottle-alt"></i>
+                    </div>
+                    <div class="record-info">
+                        <h3>Paracetamol 500mg</h3>
+                        <p>Take 1 tablet every 6 hours as needed for pain or fever. Do not exceed 4 tablets in 24 hours.</p>
+                        <div class="record-meta">
+                            <span class="record-date">
+                                <i class="far fa-calendar"></i> May 10, 2024 - May 24, 2024
+                            </span>
+                            <span>
+                                <i class="fas fa-user-md"></i> Dr. Sarah Johnson
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="record-item">
+                    <div class="record-icon">
+                        <i class="fas fa-prescription-bottle-alt"></i>
+                    </div>
+                    <div class="record-info">
+                        <h3>Ibuprofen 400mg</h3>
+                        <p>Take 1 tablet every 8 hours with food for inflammation.</p>
+                        <div class="record-meta">
+                            <span class="record-date">
+                                <i class="far fa-calendar"></i> May 10, 2024 - May 31, 2024
+                            </span>
+                            <span>
+                                <i class="fas fa-user-md"></i> Dr. Sarah Johnson
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Known Allergies -->
+            <div class="record-section">
+                <div class="section-header">
+                    <h2 class="section-title">Known Allergies</h2>
+                    <a href="#" class="section-action">Edit</a>
+                </div>
+                <div class="record-item">
+                    <div class="record-icon" style="background: rgba(220, 38, 38, 0.1); color: var(--urgent-red);">
+                        <i class="fas fa-allergies"></i>
+                    </div>
+                    <div class="record-info">
+                        <h3>Penicillin</h3>
+                        <p>Severe allergic reaction including rash, swelling and difficulty breathing.</p>
+                    </div>
+                </div>
+                <div class="record-item">
+                    <div class="record-icon" style="background: rgba(220, 38, 38, 0.1); color: var(--urgent-red);">
+                        <i class="fas fa-allergies"></i>
+                    </div>
+                    <div class="record-info">
+                        <h3>Peanuts</h3>
+                        <p>Mild allergic reaction including itching and rash.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simple script to handle tab switching
+        document.querySelectorAll('.record-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.record-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                // In a real app, we'd load the selected record type
+            });
+        });
+    </script>
+</body>
+</html>

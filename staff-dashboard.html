@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Dashboard - DKUT Medical Center</title>
+    <style>
+        /* Shared Styles (same as previous pages) */
+        :root {
+            --primary-blue: #0066CC;
+            --secondary-teal: #00A693;
+            --accent-green: #28A745;
+            --urgent-red: #DC2626;
+            --warning-yellow: #F59E0B;
+            --success-green: #10B981;
+            --white: #FFFFFF;
+            --light-gray: #F8FAFC;
+            --medium-gray: #64748B;
+            --dark-gray: #334155;
+            --almost-black: #0F172A;
+            --hero-gradient: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-teal) 100%);
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--light-gray);
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Navigation */
+        .sidebar {
+            width: 260px;
+            background: var(--white);
+            height: 100vh;
+            position: fixed;
+            box-shadow: var(--shadow-md);
+            padding: 1.5rem 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            padding: 0 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--hero-gradient);
+            border-radius: 10px;
+            margin-right: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .logo-text {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+        }
+
+        .nav-menu {
+            list-style: none;
+            padding: 0;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1.5rem;
+            text-decoration: none;
+            color: var(--dark-gray);
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: rgba(0, 102, 204, 0.1);
+            color: var(--primary-blue);
+        }
+
+        .nav-link i {
+            margin-right: 0.75rem;
+            font-size: 1.1rem;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 260px;
+            padding: 2rem;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 1.75rem;
+            color: var(--almost-black);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--hero-gradient);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 0.75rem;
+            font-weight: 600;
+        }
+
+        .user-name {
+            font-weight: 500;
+            color: var(--dark-gray);
+        }
+
+        /* Dashboard Cards */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s ease;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--dark-gray);
+        }
+
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .card-icon.blue {
+            background: rgba(0, 102, 204, 0.1);
+            color: var(--primary-blue);
+        }
+
+        .card-icon.green {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success-green);
+        }
+
+        .card-icon.orange {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning-yellow);
+        }
+
+        .card-icon.red {
+            background: rgba(220, 38, 38, 0.1);
+            color: var(--urgent-red);
+        }
+
+        .card-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--almost-black);
+            margin-bottom: 0.5rem;
+        }
+
+        .card-description {
+            color: var(--medium-gray);
+            font-size: 0.9rem;
+        }
+
+        /* Priority Queue */
+        .priority-queue {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .queue-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .queue-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--almost-black);
+        }
+
+        .queue-tabs {
+            display: flex;
+            background: var(--light-gray);
+            border-radius: 12px;
+            padding: 4px;
+        }
+
+        .queue-tab {
+            padding: 0.5rem 1rem;
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .queue-tab.active {
+            background: white;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .queue-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .queue-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 0.75rem;
+            transition: all 0.3s ease;
+            background: var(--light-gray);
+        }
+
+        .queue-item.urgent {
+            border-left: 4px solid var(--urgent-red);
+        }
+
+        .queue-item.high {
+            border-left: 4px solid var(--warning-yellow);
+        }
+
+        .queue-item.normal {
+            border-left: 4px solid var(--success-green);
+        }
+
+        .queue-item:hover {
+            background: white;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .queue-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--hero-gradient);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            font-weight: 600;
+        }
+
+        .queue-info {
+            flex: 1;
+        }
+
+        .queue-info h3 {
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+            color: var(--dark-gray);
+        }
+
+        .queue-info p {
+            font-size: 0.9rem;
+            color: var(--medium-gray);
+        }
+
+        .queue-priority {
+            font-size: 0.8rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-weight: 500;
+        }
+
+        .priority-urgent {
+            background: rgba(220, 38, 38, 0.1);
+            color: var(--urgent-red);
+        }
+
+        .priority-high {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning-yellow);
+        }
+
+        .priority-normal {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success-green);
+        }
+
+        .queue-action {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .queue-action:hover {
+            background: var(--secondary-teal);
+        }
+
+        /* Upcoming Appointments */
+        .appointments-section {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--almost-black);
+        }
+
+        .section-action {
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .appointment-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .appointment-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .appointment-item:last-child {
+            border-bottom: none;
+        }
+
+        .appointment-info h4 {
+            font-size: 1rem;
+            color: var(--dark-gray);
+            margin-bottom: 0.25rem;
+        }
+
+        .appointment-info p {
+            font-size: 0.9rem;
+            color: var(--medium-gray);
+        }
+
+        .appointment-time {
+            font-weight: 600;
+            color: var(--almost-black);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 220px;
+            }
+            .main-content {
+                margin-left: 220px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding: 1rem;
+            }
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+            .dashboard-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .user-profile {
+                margin-top: 1rem;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <div class="sidebar">
+        <div class="logo">
+            <div class="logo-icon">⚕</div>
+            <div class="logo-text">DKUT Medical</div>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="staff-dashboard.html" class="nav-link active">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="staff-patients.html" class="nav-link">
+                    <i class="fas fa-user-injured"></i>
+                    <span>Patients</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="staff-appointments.html" class="nav-link">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Appointments</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="staff-consultations.html" class="nav-link">
+                    <i class="fas fa-comment-medical"></i>
+                    <span>Consultations</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="staff-records.html" class="nav-link">
+                    <i class="fas fa-file-medical"></i>
+                    <span>Medical Records</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="staff-settings.html" class="nav-link">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="header">
+            <h1>Staff Dashboard</h1>
+            <div class="user-profile">
+                <div class="user-avatar">SJ</div>
+                <div class="user-name">Dr. Sarah Johnson</div>
+            </div>
+        </div>
+
+        <!-- Dashboard Cards -->
+        <div class="dashboard-grid">
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <div class="card-title">Today's Appointments</div>
+                    <div class="card-icon blue">
+                        <i class="fas fa-calendar-day"></i>
+                    </div>
+                </div>
+                <div class="card-value">8</div>
+                <div class="card-description">3 completed, 5 remaining</div>
+            </div>
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <div class="card-title">Pending Consultations</div>
+                    <div class="card-icon orange">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                </div>
+                <div class="card-value">5</div>
+                <div class="card-description">Waiting for your response</div>
+            </div>
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <div class="card-title">Urgent Cases</div>
+                    <div class="card-icon red">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                </div>
+                <div class="card-value">2</div>
+                <div class="card-description">Require immediate attention</div>
+            </div>
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <div class="card-title">Patient Messages</div>
+                    <div class="card-icon green">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                </div>
+                <div class="card-value">12</div>
+                <div class="card-description">3 unread messages</div>
+            </div>
+        </div>
+
+        <!-- Priority Queue -->
+        <div class="priority-queue">
+            <div class="queue-header">
+                <h2 class="queue-title">Priority Queue</h2>
+                <div class="queue-tabs">
+                    <button class="queue-tab active">All</button>
+                    <button class="queue-tab">Urgent</button>
+                    <button class="queue-tab">High</button>
+                    <button class="queue-tab">Normal</button>
+                </div>
+            </div>
+            <ul class="queue-list">
+                <li class="queue-item urgent">
+                    <div class="queue-avatar">JD</div>
+                    <div class="queue-info">
+                        <h3>John Doe</h3>
+                        <p>Chest pain, difficulty breathing</p>
+                    </div>
+                    <div class="queue-priority priority-urgent">URGENT</div>
+                    <button class="queue-action">
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </li>
+                <li class="queue-item high">
+                    <div class="queue-avatar">AS</div>
+                    <div class="queue-info">
+                        <h3>Alice Smith</h3>
+                        <p>High fever for 3 days</p>
+                    </div>
+                    <div class="queue-priority priority-high">HIGH</div>
+                    <button class="queue-action">
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </li>
+                <li class="queue-item normal">
+                    <div class="queue-avatar">RJ</div>
+                    <div class="queue-info">
+                        <h3>Robert Johnson</h3>
+                        <p>Follow-up consultation</p>
+                    </div>
+                    <div class="queue-priority priority-normal">NORMAL</div>
+                    <button class="queue-action">
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </li>
+                <li class="queue-item normal">
+                    <div class="queue-avatar">MW</div>
+                    <div class="queue-info">
+                        <h3>Maria Williams</h3>
+                        <p>Routine checkup</p>
+                    </div>
+                    <div class="queue-priority priority-normal">NORMAL</div>
+                    <button class="queue-action">
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Upcoming Appointments -->
+        <div class="appointments-section">
+            <div class="section-header">
+                <h2 class="section-title">Today's Appointments</h2>
+                <a href="staff-appointments.html" class="section-action">View All</a>
+            </div>
+            <ul class="appointment-list">
+                <li class="appointment-item">
+                    <div class="appointment-info">
+                        <h4>John Doe</h4>
+                        <p>General Checkup</p>
+                    </div>
+                    <div class="appointment-time">10:30 AM</div>
+                </li>
+                <li class="appointment-item">
+                    <div class="appointment-info">
+                        <h4>Alice Smith</h4>
+                        <p>Fever Consultation</p>
+                    </div>
+                    <div class="appointment-time">11:15 AM</div>
+                </li>
+                <li class="appointment-item">
+                    <div class="appointment-info">
+                        <h4>Robert Johnson</h4>
+                        <p>Follow-up Visit</p>
+                    </div>
+                    <div class="appointment-time">1:45 PM</div>
+                </li>
+                <li class="appointment-item">
+                    <div class="appointment-info">
+                        <h4>Maria Williams</h4>
+                        <p>Routine Checkup</p>
+                    </div>
+                    <div class="appointment-time">3:30 PM</div>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Simple script to handle tab switching
+        document.querySelectorAll('.queue-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.queue-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                // In a real app, we'd filter the queue by priority
+            });
+        });
+
+        // Simple script to handle queue actions
+        document.querySelectorAll('.queue-action').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // In a real app, this would start the consultation
+                alert('Starting consultation with this patient...');
+            });
+        });
+    </script>
+</body>
+</html>

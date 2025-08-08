@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consultations - DKUT Medical Center</title>
+    <style>
+        /* Shared Styles (same as dashboard) */
+        :root {
+            --primary-blue: #0066CC;
+            --secondary-teal: #00A693;
+            --accent-green: #28A745;
+            --urgent-red: #DC2626;
+            --warning-yellow: #F59E0B;
+            --success-green: #10B981;
+            --white: #FFFFFF;
+            --light-gray: #F8FAFC;
+            --medium-gray: #64748B;
+            --dark-gray: #334155;
+            --almost-black: #0F172A;
+            --hero-gradient: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-teal) 100%);
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--light-gray);
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Navigation */
+        .sidebar {
+            width: 260px;
+            background: var(--white);
+            height: 100vh;
+            position: fixed;
+            box-shadow: var(--shadow-md);
+            padding: 1.5rem 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            padding: 0 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--hero-gradient);
+            border-radius: 10px;
+            margin-right: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .logo-text {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+        }
+
+        .nav-menu {
+            list-style: none;
+            padding: 0;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1.5rem;
+            text-decoration: none;
+            color: var(--dark-gray);
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: rgba(0, 102, 204, 0.1);
+            color: var(--primary-blue);
+        }
+
+        .nav-link i {
+            margin-right: 0.75rem;
+            font-size: 1.1rem;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 260px;
+            padding: 2rem;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 1.75rem;
+            color: var(--almost-black);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--hero-gradient);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 0.75rem;
+            font-weight: 600;
+        }
+
+        .user-name {
+            font-weight: 500;
+            color: var(--dark-gray);
+        }
+
+        /* Consultation Tabs */
+        .consultation-tabs {
+            display: flex;
+            background: var(--light-gray);
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 2rem;
+        }
+
+        .consultation-tab {
+            padding: 0.5rem 1rem;
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .consultation-tab.active {
+            background: white;
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* Consultation List */
+        .consultation-list {
+            background: var(--white);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .consultation-header {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr 0.5fr;
+            background: var(--light-gray);
+            padding: 1rem;
+            font-weight: 600;
+        }
+
+        .consultation-item {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr 0.5fr;
+            padding: 1rem;
+            border-bottom: 1px solid var(--light-gray);
+            align-items: center;
+        }
+
+        .consultation-item:last-child {
+            border-bottom: none;
+        }
+
+        .consultation-item:hover {
+            background: rgba(0, 102, 204, 0.05);
+        }
+
+        .patient-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .patient-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--hero-gradient);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 0.75rem;
+            font-weight: 600;
+        }
+
+        .patient-name {
+            font-weight: 500;
+        }
+
+        .consultation-date {
+            font-weight: 600;
+        }
+
+        .consultation-status {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .status-pending {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning-yellow);
+        }
+
+        .status-completed {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success-green);
+        }
+
+        .status-cancelled {
+            background: rgba(100, 116, 139, 0.1);
+            color: var(--medium-gray);
+        }
+
+        .action-button {
+            background: transparent;
+            border: none;
+            color: var(--primary-blue);
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .action-button:hover {
+            background: rgba(0, 102, 204, 0.1);
+        }
+
+        /* Consultation Priority */
+        .priority-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .priority-urgent {
+            background: rgba(220, 38, 38, 0.1);
+            color: var(--urgent-red);
+        }
+
+        .priority-high {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning-yellow);
+        }
+
+        .priority-normal {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success-green);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 220px;
+            }
+            .main-content {
+                margin-left: 220px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding: 1rem;
+            }
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+            .consultation-header, .consultation-item {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .user-profile {
+                margin-top: 1rem;
+            }
+            .consultation-header, .consultation-item {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <div class="sidebar">
+        <div class="logo">
+            <div class="logo-icon">⚕</div>
+            <div class="logo-text">DKUT Medical</div>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="staff-dashboard.html" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="staff-patients.html" class="nav-link">
+                    <i class="fas fa-user-injured"></i>
+                    <span>Patients</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="staff-appointments.html" class="nav-link">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Appointments</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="staff-consultations.html" class="nav-link active">
+                    <i class="fas fa-comment-medical"></i>
+                    <span>Consultations</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="staff-records.html" class="nav-link">
+                    <i class="fas fa-file-medical"></i>
+                    <span>Medical Records</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="staff-settings.html" class="nav-link">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="header">
+            <h1>Patient Consultations</h1>
+            <div class="user-profile">
+                <div class="user-avatar">SJ</div>
+                <div class="user-name">Dr. Sarah Johnson</div>
+            </div>
+        </div>
+
+        <!-- Consultation Tabs -->
+        <div class="consultation-tabs">
+            <button class="consultation-tab active">All Consultations</button>
+            <button class="consultation-tab">Pending</button>
+            <button class="consultation-tab">Completed</button>
+            <button class="consultation-tab">Urgent</button>
+        </div>
+
+        <!-- Consultation List -->
+        <div class="consultation-list">
+            <div class="consultation-header">
+                <div>Patient</div>
+                <div>Date & Time</div>
+                <div>Priority</div>
+                <div>Status</div>
+                <div>Actions</div>
+            </div>
+            
+            <div class="consultation-item">
+                <div class="patient-info">
+                    <div class="patient-avatar">JD</div>
+                    <div class="patient-name">John Doe</div>
+                </div>
+                <div class="consultation-date">Today, 10:30 AM</div>
+                <div><span class="priority-badge priority-urgent">URGENT</span></div>
+                <div><span class="consultation-status status-completed">Completed</span></div>
+                <div>
+                    <button class="action-button"><i class="fas fa-eye"></i></button>
+                    <button class="action-button"><i class="fas fa-edit"></i></button>
+                </div>
+            </div>
+            
+            <div class="consultation-item">
+                <div class="patient-info">
+                    <div class="patient-avatar">AS</div>
+                    <div class="patient-name">Alice Smith</div>
+                </div>
+                <div class="consultation-date">Today, 11:15 AM</div>
+                <div><span class="priority-badge priority-high">HIGH</span></div>
+                <div><span class="consultation-status status-completed">Completed</span></div>
+                <div>
+                    <button class="action-button"><i class="fas fa-eye"></i></button>
+                    <button class="action-button"><i class="fas fa-edit"></i></button>
+                </div>
+            </div>
+            
+            <div class="consultation-item">
+                <div class="patient-info">
+                    <div class="patient-avatar">RJ</div>
+                    <div class="patient-name">Robert Johnson</div>
+                </div>
+                <div class="consultation-date">Yesterday, 2:30 PM</div>
+                <div><span class="priority-badge priority-normal">NORMAL</span></div>
+                <div><span class="consultation-status status-completed">Completed</span></div>
+                <div>
+                    <button class="action-button"><i class="fas fa-eye"></i></button>
+                    <button class="action-button"><i class="fas fa-edit"></i></button>
+                </div>
+            </div>
+            
+            <div class="consultation-item">
+                <div class="patient-info">
+                    <div class="patient-avatar">MW</div>
+                    <div class="patient-name">Maria Williams</div>
+                </div>
+                <div class="consultation-date">Dec 5, 9:00 AM</div>
+                <div><span class="priority-badge priority-normal">NORMAL</span></div>
+                <div><span class="consultation-status status-pending">Pending</span></div>
+                <div>
+                    <button class="action-button"><i class="fas fa-eye"></i></button>
+                    <button class="action-button"><i class="fas fa-edit"></i></button>
+                </div>
+            </div>
+            
+            <div class="consultation-item">
+                <div class="patient-info">
+                    <div class="patient-avatar">TB</div>
+                    <div class="patient-name">Thomas Brown</div>
+                </div>
+                <div class="consultation-date">Dec 1, 3:45 PM</div>
+                <div><span class="priority-badge priority-high">HIGH</span></div>
+                <div><span class="consultation-status status-cancelled">Cancelled</span></div>
+                <div>
+                    <button class="action-button"><i class="fas fa-eye"></i></button>
+                    <button class="action-button"><i class="fas fa-edit"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simple script for tab switching
+        document.querySelectorAll('.consultation-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.consultation-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                // In a real app, we'd filter the consultations by status
+            });
+        });
+
+        // Simple script for action buttons
+        document.querySelectorAll('.action-button').forEach(button => {
+            button.addEventListener('click', function() {
+                if (this.querySelector('.fa-eye')) {
+                    alert('Viewing consultation details...');
+                } else if (this.querySelector('.fa-edit')) {
+                    alert('Editing consultation notes...');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

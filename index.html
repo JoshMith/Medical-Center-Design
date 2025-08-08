@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DKUT Medical Center - AI Triage System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Medical Color Psychology */
+            --primary-blue: #0066CC;
+            --secondary-teal: #00A693;
+            --accent-green: #28A745;
+            --warm-orange: #FF6B35;
+            --soft-purple: #8B5CF6;
+            
+            /* Neutrals */
+            --white: #FFFFFF;
+            --light-gray: #F8FAFC;
+            --medium-gray: #64748B;
+            --dark-gray: #334155;
+            --almost-black: #0F172A;
+            
+            /* Status colors */
+            --urgent-red: #DC2626;
+            --warning-yellow: #F59E0B;
+            --success-green: #10B981;
+            
+            /* Gradients */
+            --hero-gradient: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-teal) 100%);
+            --card-gradient: linear-gradient(145deg, rgba(255,255,255,0.9) 0%, rgba(248,250,252,0.9) 100%);
+            
+            /* Shadows */
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--almost-black);
+            background: var(--light-gray);
+        }
+
+        /* Navigation */
+        .navbar {
+            background: var(--white);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0,102,204,0.1);
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--hero-gradient);
+            border-radius: 10px;
+            margin-right: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark-gray);
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+        }
+
+        .nav-links a:hover {
+            background: rgba(0,102,204,0.1);
+            color: var(--primary-blue);
+        }
+
+        .login-btn {
+            background: var(--primary-blue);
+            color: white !important;
+            padding: 0.75rem 1.5rem !important;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .login-btn:hover {
+            background: var(--secondary-teal) !important;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: var(--hero-gradient);
+            padding: 8rem 0 6rem;
+            margin-top: 70px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><radialGradient id="a" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="rgba(255,255,255,0.1)"/><stop offset="100%" stop-color="rgba(255,255,255,0)"/></radialGradient></defs><circle cx="200" cy="200" r="100" fill="url(%23a)"/><circle cx="800" cy="300" r="150" fill="url(%23a)"/><circle cx="400" cy="700" r="120" fill="url(%23a)"/></svg>');
+            opacity: 0.6;
+        }
+
+        .hero-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            color: white;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 3rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary, .btn-secondary {
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 12px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: white;
+            color: var(--primary-blue);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.3);
+            border-color: rgba(255,255,255,0.5);
+        }
+
+        /* Features Section */
+        .features {
+            padding: 6rem 0;
+            background: var(--white);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--almost-black);
+            margin-bottom: 1rem;
+        }
+
+        .section-header p {
+            font-size: 1.1rem;
+            color: var(--medium-gray);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .feature-card {
+            background: var(--card-gradient);
+            padding: 2.5rem;
+            border-radius: 20px;
+            border: 1px solid rgba(0,102,204,0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--hero-gradient);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .feature-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--hero-gradient);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--almost-black);
+            margin-bottom: 1rem;
+        }
+
+        .feature-card p {
+            color: var(--medium-gray);
+            line-height: 1.7;
+        }
+
+        /* Priority System */
+        .priority-section {
+            padding: 6rem 0;
+            background: var(--light-gray);
+        }
+
+        .priority-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .priority-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            border-left: 4px solid var(--primary-blue);
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s ease;
+        }
+
+        .priority-card.urgent {
+            border-left-color: var(--urgent-red);
+        }
+
+        .priority-card.medium {
+            border-left-color: var(--warning-yellow);
+        }
+
+        .priority-card.advice {
+            border-left-color: var(--success-green);
+        }
+
+        .priority-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .priority-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .priority-badge.urgent {
+            background: rgba(220, 38, 38, 0.1);
+            color: var(--urgent-red);
+        }
+
+        .priority-badge.medium {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning-yellow);
+        }
+
+        .priority-badge.advice {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success-green);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--almost-black);
+            color: white;
+            padding: 4rem 0 2rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            color: var(--secondary-teal);
+        }
+
+        .footer-section p,
+        .footer-section a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            line-height: 1.8;
+        }
+
+        .footer-section a:hover {
+            color: var(--secondary-teal);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 2rem;
+            text-align: center;
+            color: rgba(255,255,255,0.6);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-container {
+                padding: 0 1rem;
+            }
+            
+            .hero {
+                padding: 6rem 0 4rem;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn-primary, .btn-secondary {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .features-grid,
+            .priority-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 0 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <div class="logo-icon">⚕</div>
+                DKUT Medical Center
+            </div>
+            <div class="nav-links">
+                <a href="#home">Home</a>
+                <a href="#services">Services</a>
+                <a href="#about">About</a>
+                <a href="#contact">Contact</a>
+                <a href="login.html" class="login-btn">Patient Login</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-container">
+            <h1>AI-Powered Medical Triage</h1>
+            <p>Experience intelligent healthcare with our priority-based consultation system. Get immediate assessment and personalized care recommendations.</p>
+            <div class="hero-buttons">
+                <a href="triage.html" class="btn-primary">
+                    🩺 Start Health Assessment
+                </a>
+                <a href="consultations.html" class="btn-secondary">
+                    💬 Virtual Consultation
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="services">
+        <div class="container">
+            <div class="section-header">
+                <h2>Advanced Healthcare Solutions</h2>
+                <p>Our AI-driven platform provides comprehensive medical support tailored to your needs</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Smart Triage System</h3>
+                    <p>AI-powered symptom analysis that prioritizes urgent cases and provides immediate guidance for optimal care pathways.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💬</div>
+                    <h3>Virtual Consultations</h3>
+                    <p>Connect with healthcare professionals through our secure platform or get instant AI-powered health advice.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📅</div>
+                    <h3>Intelligent Scheduling</h3>
+                    <p>Priority-based appointment booking with automated reminders via SMS and email notifications.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Health Analytics</h3>
+                    <p>Track your health journey with comprehensive analytics and personalized insights for better wellness.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>Secure & Private</h3>
+                    <p>End-to-end encryption ensures your medical data remains confidential and secure at all times.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>24/7 Availability</h3>
+                    <p>Round-the-clock access to AI health assistance and emergency triage for peace of mind.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Priority System Section -->
+    <section class="priority-section" id="about">
+        <div class="container">
+            <div class="section-header">
+                <h2>Priority-Based Care System</h2>
+                <p>Our intelligent triage system categorizes health concerns to ensure appropriate and timely care</p>
+            </div>
+            <div class="priority-cards">
+                <div class="priority-card urgent">
+                    <div class="priority-badge urgent">🚨 URGENT</div>
+                    <h3>Immediate Care Required</h3>
+                    <p>Chest pain, severe breathing difficulty, heavy bleeding, or other life-threatening symptoms require immediate medical attention.</p>
+                    <strong>Response: Immediate consultation</strong>
+                </div>
+                <div class="priority-card medium">
+                    <div class="priority-badge medium">⚠️ MEDIUM PRIORITY</div>
+                    <h3>Timely Care Needed</h3>
+                    <p>Persistent fever, moderate pain, concerning rashes, or symptoms that may worsen without treatment.</p>
+                    <strong>Response: Appointment within 24 hours</strong>
+                </div>
+                <div class="priority-card advice">
+                    <div class="priority-badge advice">💡 HEALTH ADVICE</div>
+                    <h3>Self-Care Guidance</h3>
+                    <p>Minor symptoms, wellness questions, or health maintenance queries that can be managed with proper guidance.</p>
+                    <strong>Response: AI-powered advice & monitoring</strong>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer" id="contact">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>DKUT Medical Center</h3>
+                    <p>Advanced AI-powered healthcare solutions for the modern world. Providing intelligent triage and personalized medical care.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <a href="triage.html">Health Assessment</a><br>
+                    <a href="consultations.html">Virtual Consultation</a><br>
+                    <a href="appointments.html">Book Appointment</a><br>
+                    <a href="dashboard.html">Patient Dashboard</a>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact Info</h3>
+                    <p>📍 DKUT Campus, Nyeri<br>
+                    📞 +254 700 000 000<br>
+                    ✉️ info@dkutmedical.ac.ke</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Emergency</h3>
+                    <p>For medical emergencies:<br>
+                    📞 Emergency: 911<br>
+                    🚨 Campus Security: +254 700 111 111</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 DKUT Medical Center. All rights reserved. | Privacy Policy | Terms of Service</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        // Mobile menu toggle (if needed)
+        function toggleMobileMenu() {
+            const navLinks = document.querySelector('.nav-links');
+            navLinks.classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

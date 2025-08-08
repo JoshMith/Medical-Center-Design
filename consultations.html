@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Consultation - DKUT Medical Center</title>
+    <style>
+        /* Shared Styles (same as previous pages) */
+        :root {
+            --primary-blue: #0066CC;
+            --secondary-teal: #00A693;
+            --accent-green: #28A745;
+            --urgent-red: #DC2626;
+            --warning-yellow: #F59E0B;
+            --success-green: #10B981;
+            --white: #FFFFFF;
+            --light-gray: #F8FAFC;
+            --medium-gray: #64748B;
+            --dark-gray: #334155;
+            --almost-black: #0F172A;
+            --hero-gradient: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-teal) 100%);
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--light-gray);
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Navigation (same as dashboard) */
+        .sidebar {
+            width: 260px;
+            background: var(--white);
+            height: 100vh;
+            position: fixed;
+            box-shadow: var(--shadow-md);
+            padding: 1.5rem 0;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 260px;
+            padding: 2rem;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 1.75rem;
+            color: var(--almost-black);
+        }
+
+        /* Consultation Container */
+        .consultation-container {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+        }
+
+        /* Consultation List */
+        .consultation-list {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            height: fit-content;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--almost-black);
+            margin-bottom: 1.5rem;
+        }
+
+        .consultation-type {
+            display: flex;
+            border-bottom: 1px solid var(--light-gray);
+            padding-bottom: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .type-btn {
+            flex: 1;
+            padding: 0.75rem;
+            border: none;
+            background: transparent;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .type-btn.active {
+            background: rgba(0, 102, 204, 0.1);
+            color: var(--primary-blue);
+        }
+
+        .consultation-item {
+            display: flex;
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .consultation-item:hover {
+            background: rgba(0, 102, 204, 0.05);
+            border-color: rgba(0, 102, 204, 0.2);
+        }
+
+        .consultation-item.active {
+            background: rgba(0, 102, 204, 0.1);
+            border-color: var(--primary-blue);
+        }
+
+        .consultation-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--hero-gradient);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .consultation-info h3 {
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+            color: var(--dark-gray);
+        }
+
+        .consultation-preview {
+            font-size: 0.9rem;
+            color: var(--medium-gray);
+            display: -webkit-box;
+            line-clamp: 2;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .consultation-time {
+            font-size: 0.8rem;
+            color: var(--medium-gray);
+            margin-top: 0.25rem;
+        }
+
+        .new-consultation-btn {
+            width: 100%;
+            padding: 1rem;
+            background: var(--hero-gradient);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            margin-top: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .new-consultation-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Chat Container */
+        .chat-container {
+            background: var(--white);
+            border-radius: 16px;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 180px);
+        }
+
+        .chat-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--light-gray);
+            display: flex;
+            align-items: center;
+        }
+
+        .chat-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--hero-gradient);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .chat-info h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+            color: var(--dark-gray);
+        }
+
+        .chat-status {
+            font-size: 0.9rem;
+            color: var(--medium-gray);
+        }
+
+        .chat-status.online {
+            color: var(--success-green);
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 1.5rem;
+            overflow-y: auto;
+        }
+
+        .message {
+            max-width: 70%;
+            margin-bottom: 1rem;
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .message.received {
+            background: var(--light-gray);
+            border-top-left-radius: 4px;
+            margin-right: auto;
+        }
+
+        .message.sent {
+            background: var(--primary-blue);
+            color: white;
+            border-top-right-radius: 4px;
+            margin-left: auto;
+        }
+
+        .message-time {
+            font-size: 0.75rem;
+            color: var(--medium-gray);
+            margin-top: 0.25rem;
+            text-align: right;
+        }
+
+        .message.sent .message-time {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .chat-input-container {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--light-gray);
+            display: flex;
+            align-items: center;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--light-gray);
+            border-radius: 12px;
+            resize: none;
+            max-height: 120px;
+            font-family: inherit;
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+        }
+
+        .send-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            margin-left: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .send-btn:hover {
+            background: var(--secondary-teal);
+        }
+
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .empty-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: rgba(0, 102, 204, 0.1);
+            color: var(--primary-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .empty-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--dark-gray);
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-description {
+            color: var(--medium-gray);
+            margin-bottom: 1.5rem;
+            max-width: 300px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .consultation-container {
+                grid-template-columns: 1fr;
+            }
+            .chat-container {
+                height: 500px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding: 1rem;
+            }
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .message {
+                max-width: 85%;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- Sidebar Navigation (same as dashboard) -->
+    <div class="sidebar">
+        <div class="logo">
+            <div class="logo-icon">⚕</div>
+            <div class="logo-text">DKUT Medical</div>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="dashboard.html" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="consultations.html" class="nav-link active">
+                    <i class="fas fa-comment-medical"></i>
+                    <span>Consultations</span>
+                </a>
+            </li>
+            <!-- Other nav items -->
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="header">
+            <h1>Virtual Consultation</h1>
+        </div>
+
+        <div class="consultation-container">
+            <!-- Consultation List -->
+            <div class="consultation-list">
+                <h2 class="section-title">My Consultations</h2>
+                <div class="consultation-type">
+                    <button class="type-btn active">All</button>
+                    <button class="type-btn">Active</button>
+                    <button class="type-btn">Completed</button>
+                </div>
+                <div class="consultation-item active">
+                    <div class="consultation-avatar">SJ</div>
+                    <div class="consultation-info">
+                        <h3>Dr. Sarah Johnson</h3>
+                        <p class="consultation-preview">Hello John, I've reviewed your symptoms and would like to ask a few more questions...</p>
+                        <p class="consultation-time">Today, 10:45 AM</p>
+                    </div>
+                </div>
+                <div class="consultation-item">
+                    <div class="consultation-avatar">MC</div>
+                    <div class="consultation-info">
+                        <h3>Dr. Michael Chen</h3>
+                        <p class="consultation-preview">Your dental appointment is confirmed for next week</p>
+                        <p class="consultation-time">May 10, 2:30 PM</p>
+                    </div>
+                </div>
+                <div class="consultation-item">
+                    <div class="consultation-avatar">AI</div>
+                    <div class="consultation-info">
+                        <h3>AI Health Assistant</h3>
+                        <p class="consultation-preview">Based on your symptoms, I recommend drinking plenty of fluids and resting</p>
+                        <p class="consultation-time">May 5, 4:15 PM</p>
+                    </div>
+                </div>
+                <button class="new-consultation-btn">
+                    <i class="fas fa-plus"></i> New Consultation
+                </button>
+            </div>
+
+            <!-- Chat Container -->
+            <div class="chat-container">
+                <div class="chat-header">
+                    <div class="chat-avatar">SJ</div>
+                    <div class="chat-info">
+                        <h3>Dr. Sarah Johnson</h3>
+                        <p class="chat-status online">Online</p>
+                    </div>
+                </div>
+                <div class="chat-messages">
+                    <div class="message received">
+                        <p>Hello John, I've reviewed the symptoms you reported in your health assessment. How are you feeling today?</p>
+                        <p class="message-time">Today, 10:45 AM</p>
+                    </div>
+                    <div class="message sent">
+                        <p>Hi Dr. Johnson, I'm still experiencing the headache and mild fever. The pain is mostly around my temples.</p>
+                        <p class="message-time">Today, 10:47 AM</p>
+                    </div>
+                    <div class="message received">
+                        <p>I see. Have you taken any medication for the pain? And has your fever been constant or does it come and go?</p>
+                        <p class="message-time">Today, 10:49 AM</p>
+                    </div>
+                    <div class="message sent">
+                        <p>I took paracetamol this morning which helped a bit. The fever seems to be worse in the evenings.</p>
+                        <p class="message-time">Today, 10:50 AM</p>
+                    </div>
+                </div>
+                <div class="chat-input-container">
+                    <textarea class="chat-input" placeholder="Type your message here..." rows="1"></textarea>
+                    <button class="send-btn">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simple script to handle chat functionality
+        document.querySelectorAll('.consultation-item').forEach(item => {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.consultation-item').forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+                // In a real app, we'd load the selected conversation
+            });
+        });
+
+        document.querySelectorAll('.type-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                // In a real app, we'd filter conversations by type
+            });
+        });
+
+        // Auto-resize textarea
+        const textarea = document.querySelector('.chat-input');
+        textarea.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+
+        // Send message on Enter key (but allow Shift+Enter for new lines)
+        textarea.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                const message = this.value.trim();
+                if (message) {
+                    // In a real app, we'd send the message to the server
+                    const messagesContainer = document.querySelector('.chat-messages');
+                    
+                    // Create new message element
+                    const newMessage = document.createElement('div');
+                    newMessage.className = 'message sent';
+                    newMessage.innerHTML = `
+                        <p>${message}</p>
+                        <p class="message-time">Just now</p>
+                    `;
+                    
+                    messagesContainer.appendChild(newMessage);
+                    this.value = '';
+                    this.style.height = 'auto';
+                    
+                    // Scroll to bottom
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                    
+                    // Simulate doctor response after a delay
+                    setTimeout(() => {
+                        const responses = [
+                            "I understand. Let me check your records.",
+                            "That's helpful information. Have you experienced any other symptoms?",
+                            "Based on what you're describing, I recommend...",
+                            "We should schedule a follow-up appointment to monitor this."
+                        ];
+                        const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+                        
+                        const responseMessage = document.createElement('div');
+                        responseMessage.className = 'message received';
+                        responseMessage.innerHTML = `
+                            <p>${randomResponse}</p>
+                            <p class="message-time">Just now</p>
+                        `;
+                        
+                        messagesContainer.appendChild(responseMessage);
+                        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                    }, 1500);
+                }
+            }
+        });
+
+        // Also send message when send button is clicked
+        document.querySelector('.send-btn').addEventListener('click', function() {
+            const event = new KeyboardEvent('keydown', { key: 'Enter' });
+            textarea.dispatchEvent(event);
+        });
+    </script>
+</body>
+</html>

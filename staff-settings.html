@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - DKUT Medical Center</title>
+    <style>
+        /* Shared Styles (same as dashboard) */
+        :root {
+            --primary-blue: #0066CC;
+            --secondary-teal: #00A693;
+            --accent-green: #28A745;
+            --urgent-red: #DC2626;
+            --warning-yellow: #F59E0B;
+            --success-green: #10B981;
+            --white: #FFFFFF;
+            --light-gray: #F8FAFC;
+            --medium-gray: #64748B;
+            --dark-gray: #334155;
+            --almost-black: #0F172A;
+            --hero-gradient: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-teal) 100%);
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--light-gray);
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Navigation */
+        .sidebar {
+            width: 260px;
+            background: var(--white);
+            height: 100vh;
+            position: fixed;
+            box-shadow: var(--shadow-md);
+            padding: 1.5rem 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            padding: 0 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--hero-gradient);
+            border-radius: 10px;
+            margin-right: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .logo-text {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+        }
+
+        .nav-menu {
+            list-style: none;
+            padding: 0;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1.5rem;
+            text-decoration: none;
+            color: var(--dark-gray);
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: rgba(0, 102, 204, 0.1);
+            color: var(--primary-blue);
+        }
+
+        .nav-link i {
+            margin-right: 0.75rem;
+            font-size: 1.1rem;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 260px;
+            padding: 2rem;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 1.75rem;
+            color: var(--almost-black);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--hero-gradient);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 0.75rem;
+            font-weight: 600;
+        }
+
+        .user-name {
+            font-weight: 500;
+            color: var(--dark-gray);
+        }
+
+        /* Settings Tabs */
+        .settings-tabs {
+            display: flex;
+            background: var(--light-gray);
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 2rem;
+        }
+
+        .settings-tab {
+            padding: 0.5rem 1rem;
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .settings-tab.active {
+            background: white;
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* Settings Content */
+        .settings-content {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .settings-section {
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--almost-black);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        /* Profile Settings */
+        .profile-settings {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .profile-avatar {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .avatar-preview {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: var(--hero-gradient);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: 600;
+        }
+
+        .avatar-upload {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .avatar-button {
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .avatar-button:hover {
+            background: #0052A3;
+        }
+
+        .avatar-hint {
+            font-size: 0.8rem;
+            color: var(--medium-gray);
+        }
+
+        .profile-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--dark-gray);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+            outline: none;
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-actions {
+            grid-column: span 2;
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .form-button {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .form-button.primary {
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+        }
+
+        .form-button.primary:hover {
+            background: #0052A3;
+        }
+
+        .form-button.secondary {
+            background: transparent;
+            border: 1px solid var(--medium-gray);
+            color: var(--dark-gray);
+        }
+
+        .form-button.secondary:hover {
+            background: var(--light-gray);
+        }
+
+        /* Security Settings */
+        .security-form {
+            max-width: 600px;
+        }
+
+        .password-strength {
+            height: 4px;
+            background: var(--light-gray);
+            border-radius: 2px;
+            margin-top: 0.5rem;
+            overflow: hidden;
+        }
+
+        .strength-meter {
+            height: 100%;
+            width: 0%;
+            transition: all 0.3s ease;
+        }
+
+        .strength-weak {
+            background: var(--urgent-red);
+            width: 33%;
+        }
+
+        .strength-medium {
+            background: var(--warning-yellow);
+            width: 66%;
+        }
+
+        .strength-strong {
+            background: var(--success-green);
+            width: 100%;
+        }
+
+        .password-hint {
+            font-size: 0.8rem;
+            color: var(--medium-gray);
+            margin-top: 0.25rem;
+        }
+
+        /* Notification Settings */
+        .notification-settings {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .notification-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .notification-title {
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--dark-gray);
+        }
+
+        .notification-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .notification-label {
+            font-size: 0.95rem;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 48px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #E2E8F0;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: var(--primary-blue);
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(24px);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 220px;
+            }
+            .main-content {
+                margin-left: 220px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding: 1rem;
+            }
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+            .profile-settings, .profile-form, .notification-settings {
+                grid-template-columns: 1fr;
+            }
+            .form-group.full-width {
+                grid-column: span 1;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .user-profile {
+                margin-top: 1rem;
+            }
+            .form-actions {
+                flex-direction: column;
+            }
+            .form-button {
+                width: 100%;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <div class="sidebar">
+        <div class="logo">
+            <div class="logo-icon">⚕</div>
+            <div class="logo-text">DKUT Medical</div>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="staff-dashboard.html" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="staff-patients.html" class="nav-link">
+                    <i class="fas fa-user-injured"></i>
+                    <span>Patients</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="staff-appointments.html" class="nav-link">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Appointments</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="staff-consultations.html" class="nav-link">
+                    <i class="fas fa-comment-medical"></i>
+                    <span>Consultations</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="staff-records.html" class="nav-link">
+                    <i class="fas fa-file-medical"></i>
+                    <span>Medical Records</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="staff-settings.html" class="nav-link active">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="header">
+            <h1>Account Settings</h1>
+            <div class="user-profile">
+                <div class="user-avatar">SJ</div>
+                <div class="user-name">Dr. Sarah Johnson</div>
+            </div>
+        </div>
+
+        <!-- Settings Tabs -->
+        <div class="settings-tabs">
+            <button class="settings-tab active">Profile</button>
+            <button class="settings-tab">Security</button>
+            <button class="settings-tab">Notifications</button>
+            <button class="settings-tab">Preferences</button>
+        </div>
+
+        <!-- Settings Content -->
+        <div class="settings-content">
+            <!-- Profile Settings -->
+            <div class="settings-section">
+                <h2 class="section-title">Profile Information</h2>
+                <div class="profile-settings">
+                    <div class="profile-avatar">
+                        <div class="avatar-preview">SJ</div>
+                        <div class="avatar-upload">
+                            <button class="avatar-button">
+                                <i class="fas fa-upload"></i> Upload Photo
+                            </button>
+                            <span class="avatar-hint">JPG, GIF or PNG. Max size 2MB</span>
+                        </div>
+                    </div>
+                    <form class="profile-form">
+                        <div class="form-group">
+                            <label class="form-label">First Name</label>
+                            <input type="text" class="form-input" value="Sarah">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Last Name</label>
+                            <input type="text" class="form-input" value="Johnson">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-input" value="sarah.johnson@dkutmedical.com">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Phone Number</label>
+                            <input type="tel" class="form-input" value="+254 712 345 678">
+                        </div>
+                        <div class="form-group full-width">
+                            <label class="form-label">Specialization</label>
+                            <input type="text" class="form-input" value="General Practitioner">
+                        </div>
+                        <div class="form-group full-width">
+                            <label class="form-label">Bio</label>
+                            <textarea class="form-input form-textarea">Dr. Sarah Johnson is a dedicated general practitioner with over 10 years of experience in primary care. She specializes in preventive medicine and chronic disease management.</textarea>
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="form-button secondary">Cancel</button>
+                            <button type="submit" class="form-button primary">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Security Settings -->
+            <div class="settings-section">
+                <h2 class="section-title">Security Settings</h2>
+                <form class="security-form">
+                    <div class="form-group">
+                        <label class="form-label">Current Password</label>
+                        <input type="password" class="form-input" placeholder="Enter your current password">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">New Password</label>
+                        <input type="password" class="form-input" placeholder="Enter your new password">
+                        <div class="password-strength">
+                            <div class="strength-meter strength-medium"></div>
+                        </div>
+                        <div class="password-hint">Use 8 or more characters with a mix of letters, numbers & symbols</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Confirm New Password</label>
+                        <input type="password" class="form-input" placeholder="Confirm your new password">
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="form-button secondary">Cancel</button>
+                        <button type="submit" class="form-button primary">Update Password</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Notification Settings -->
+            <div class="settings-section">
+                <h2 class="section-title">Notification Preferences</h2>
+                <div class="notification-settings">
+                    <div>
+                        <div class="notification-group">
+                            <h3 class="notification-title">Appointments</h3>
+                            <div class="notification-item">
+                                <span class="notification-label">New appointment requests</span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            <div class="notification-item">
+                                <span class="notification-label">Appointment reminders</span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            <div class="notification-item">
+                                <span class="notification-label">Cancellations</span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="notification-group">
+                            <h3 class="notification-title">Patient Communications</h3>
+                            <div class="notification-item">
+                                <span class="notification-label">New messages</span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            <div class="notification-item">
+                                <span class="notification-label">Consultation requests</span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            <div class="notification-item">
+                                <span class="notification-label">Urgent cases</span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simple script for tab switching
+        document.querySelectorAll('.settings-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.settings-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Hide all sections first
+                document.querySelectorAll('.settings-section').forEach(section => {
+                    section.style.display = 'none';
+                });
+                
+                // Show the corresponding section
+                if (this.textContent.includes('Profile')) {
+                    document.querySelectorAll('.settings-section')[0].style.display = 'block';
+                } else if (this.textContent.includes('Security')) {
+                    document.querySelectorAll('.settings-section')[1].style.display = 'block';
+                } else if (this.textContent.includes('Notifications')) {
+                    document.querySelectorAll('.settings-section')[2].style.display = 'block';
+                } else if (this.textContent.includes('Preferences')) {
+                    // In a real app, we'd show the preferences section
+                    alert('Preferences section would be displayed here');
+                }
+            });
+        });
+
+        // Initially show profile section
+        document.querySelectorAll('.settings-section')[0].style.display = 'block';
+        document.querySelectorAll('.settings-section')[1].style.display = 'none';
+        document.querySelectorAll('.settings-section')[2].style.display = 'none';
+
+        // Simple script for password strength
+        document.querySelector('input[type="password"]').addEventListener('input', function(e) {
+            const password = e.target.value;
+            const strengthMeter = document.querySelector('.strength-meter');
+            
+            // Reset classes
+            strengthMeter.className = 'strength-meter';
+            
+            if (password.length === 0) {
+                strengthMeter.style.width = '0%';
+            } else if (password.length < 6) {
+                strengthMeter.classList.add('strength-weak');
+            } else if (password.length < 10) {
+                strengthMeter.classList.add('strength-medium');
+            } else {
+                strengthMeter.classList.add('strength-strong');
+            }
+        });
+    </script>
+</body>
+</html>

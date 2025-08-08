@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Management - DKUT Medical Center</title>
+    <style>
+        /* Shared Styles (same as dashboard) */
+        :root {
+            --primary-blue: #0066CC;
+            --secondary-teal: #00A693;
+            --accent-green: #28A745;
+            --urgent-red: #DC2626;
+            --warning-yellow: #F59E0B;
+            --success-green: #10B981;
+            --white: #FFFFFF;
+            --light-gray: #F8FAFC;
+            --medium-gray: #64748B;
+            --dark-gray: #334155;
+            --almost-black: #0F172A;
+            --hero-gradient: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-teal) 100%);
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--light-gray);
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Navigation */
+        .sidebar {
+            width: 260px;
+            background: var(--white);
+            height: 100vh;
+            position: fixed;
+            box-shadow: var(--shadow-md);
+            padding: 1.5rem 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            padding: 0 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--hero-gradient);
+            border-radius: 10px;
+            margin-right: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .logo-text {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+        }
+
+        .nav-menu {
+            list-style: none;
+            padding: 0;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1.5rem;
+            text-decoration: none;
+            color: var(--dark-gray);
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: rgba(0, 102, 204, 0.1);
+            color: var(--primary-blue);
+        }
+
+        .nav-link i {
+            margin-right: 0.75rem;
+            font-size: 1.1rem;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 260px;
+            padding: 2rem;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 1.75rem;
+            color: var(--almost-black);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--hero-gradient);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 0.75rem;
+            font-weight: 600;
+        }
+
+        .user-name {
+            font-weight: 500;
+            color: var(--dark-gray);
+        }
+
+        /* Patient Search */
+        .search-bar {
+            display: flex;
+            margin-bottom: 2rem;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px 0 0 8px;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+        }
+
+        .search-button {
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 0 1.5rem;
+            border-radius: 0 8px 8px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .search-button:hover {
+            background: #0052A3;
+        }
+
+        /* Patient Table */
+        .patients-table {
+            width: 100%;
+            background: var(--white);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .table-header {
+            display: flex;
+            background: var(--light-gray);
+            padding: 1rem 1.5rem;
+            font-weight: 600;
+            color: var(--dark-gray);
+        }
+
+        .table-row {
+            display: flex;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--light-gray);
+            align-items: center;
+        }
+
+        .table-row:last-child {
+            border-bottom: none;
+        }
+
+        .table-row:hover {
+            background: rgba(0, 102, 204, 0.05);
+        }
+
+        .col-1 { width: 20%; }
+        .col-2 { width: 20%; }
+        .col-3 { width: 15%; }
+        .col-4 { width: 20%; }
+        .col-5 { width: 15%; }
+        .col-6 { width: 10%; }
+
+        .patient-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--hero-gradient);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 0.75rem;
+            font-weight: 600;
+        }
+
+        .patient-name {
+            font-weight: 500;
+            color: var(--dark-gray);
+        }
+
+        .patient-id {
+            font-size: 0.85rem;
+            color: var(--medium-gray);
+        }
+
+        .patient-status {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .status-active {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success-green);
+        }
+
+        .status-inactive {
+            background: rgba(100, 116, 139, 0.1);
+            color: var(--medium-gray);
+        }
+
+        .action-button {
+            background: transparent;
+            border: none;
+            color: var(--primary-blue);
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .action-button:hover {
+            background: rgba(0, 102, 204, 0.1);
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .pagination-button {
+            background: var(--white);
+            border: 1px solid #E2E8F0;
+            color: var(--dark-gray);
+            padding: 0.5rem 1rem;
+            margin: 0 0.25rem;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .pagination-button.active {
+            background: var(--primary-blue);
+            color: white;
+            border-color: var(--primary-blue);
+        }
+
+        .pagination-button:hover:not(.active) {
+            background: var(--light-gray);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 220px;
+            }
+            .main-content {
+                margin-left: 220px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding: 1rem;
+            }
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+            .table-header, .table-row {
+                flex-wrap: wrap;
+            }
+            .col-1, .col-2, .col-3, .col-4, .col-5, .col-6 {
+                width: 50%;
+                margin-bottom: 0.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .col-1, .col-2, .col-3, .col-4, .col-5, .col-6 {
+                width: 100%;
+            }
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .user-profile {
+                margin-top: 1rem;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <div class="sidebar">
+        <div class="logo">
+            <div class="logo-icon">⚕</div>
+            <div class="logo-text">DKUT Medical</div>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="staff-dashboard.html" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="staff-patients.html" class="nav-link active">
+                    <i class="fas fa-user-injured"></i>
+                    <span>Patients</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="staff-appointments.html" class="nav-link">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Appointments</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="staff-consultations.html" class="nav-link">
+                    <i class="fas fa-comment-medical"></i>
+                    <span>Consultations</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="staff-records.html" class="nav-link">
+                    <i class="fas fa-file-medical"></i>
+                    <span>Medical Records</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="staff-settings.html" class="nav-link">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="header">
+            <h1>Patient Management</h1>
+            <div class="user-profile">
+                <div class="user-avatar">SJ</div>
+                <div class="user-name">Dr. Sarah Johnson</div>
+            </div>
+        </div>
+
+        <!-- Patient Search -->
+        <div class="search-bar">
+            <input type="text" class="search-input" placeholder="Search patients by name, ID, or contact...">
+            <button class="search-button">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+
+        <!-- Patients Table -->
+        <div class="patients-table">
+            <div class="table-header">
+                <div class="col-1">Patient</div>
+                <div class="col-2">Contact</div>
+                <div class="col-3">Age</div>
+                <div class="col-4">Last Visit</div>
+                <div class="col-5">Status</div>
+                <div class="col-6">Actions</div>
+            </div>
+            
+            <div class="table-row">
+                <div class="col-1">
+                    <div style="display: flex; align-items: center;">
+                        <div class="patient-avatar">JD</div>
+                        <div>
+                            <div class="patient-name">John Doe</div>
+                            <div class="patient-id">#PT-1001</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-2">john.doe@example.com<br>+254 712 345 678</div>
+                <div class="col-3">32</div>
+                <div class="col-4">Today, 10:30 AM</div>
+                <div class="col-5"><span class="patient-status status-active">Active</span></div>
+                <div class="col-6">
+                    <button class="action-button"><i class="fas fa-eye"></i></button>
+                    <button class="action-button"><i class="fas fa-edit"></i></button>
+                </div>
+            </div>
+            
+            <div class="table-row">
+                <div class="col-1">
+                    <div style="display: flex; align-items: center;">
+                        <div class="patient-avatar">AS</div>
+                        <div>
+                            <div class="patient-name">Alice Smith</div>
+                            <div class="patient-id">#PT-1002</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-2">alice.smith@example.com<br>+254 723 456 789</div>
+                <div class="col-3">28</div>
+                <div class="col-4">Today, 11:15 AM</div>
+                <div class="col-5"><span class="patient-status status-active">Active</span></div>
+                <div class="col-6">
+                    <button class="action-button"><i class="fas fa-eye"></i></button>
+                    <button class="action-button"><i class="fas fa-edit"></i></button>
+                </div>
+            </div>
+            
+            <div class="table-row">
+                <div class="col-1">
+                    <div style="display: flex; align-items: center;">
+                        <div class="patient-avatar">RJ</div>
+                        <div>
+                            <div class="patient-name">Robert Johnson</div>
+                            <div class="patient-id">#PT-1003</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-2">robert.j@example.com<br>+254 734 567 890</div>
+                <div class="col-3">45</div>
+                <div class="col-4">Yesterday, 2:30 PM</div>
+                <div class="col-5"><span class="patient-status status-active">Active</span></div>
+                <div class="col-6">
+                    <button class="action-button"><i class="fas fa-eye"></i></button>
+                    <button class="action-button"><i class="fas fa-edit"></i></button>
+                </div>
+            </div>
+            
+            <div class="table-row">
+                <div class="col-1">
+                    <div style="display: flex; align-items: center;">
+                        <div class="patient-avatar">MW</div>
+                        <div>
+                            <div class="patient-name">Maria Williams</div>
+                            <div class="patient-id">#PT-1004</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-2">maria.w@example.com<br>+254 745 678 901</div>
+                <div class="col-3">38</div>
+                <div class="col-4">3 days ago</div>
+                <div class="col-5"><span class="patient-status status-active">Active</span></div>
+                <div class="col-6">
+                    <button class="action-button"><i class="fas fa-eye"></i></button>
+                    <button class="action-button"><i class="fas fa-edit"></i></button>
+                </div>
+            </div>
+            
+            <div class="table-row">
+                <div class="col-1">
+                    <div style="display: flex; align-items: center;">
+                        <div class="patient-avatar">TB</div>
+                        <div>
+                            <div class="patient-name">Thomas Brown</div>
+                            <div class="patient-id">#PT-1005</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-2">thomas.b@example.com<br>+254 756 789 012</div>
+                <div class="col-3">52</div>
+                <div class="col-4">2 weeks ago</div>
+                <div class="col-5"><span class="patient-status status-inactive">Inactive</span></div>
+                <div class="col-6">
+                    <button class="action-button"><i class="fas fa-eye"></i></button>
+                    <button class="action-button"><i class="fas fa-edit"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination">
+            <button class="pagination-button"><i class="fas fa-chevron-left"></i></button>
+            <button class="pagination-button active">1</button>
+            <button class="pagination-button">2</button>
+            <button class="pagination-button">3</button>
+            <button class="pagination-button"><i class="fas fa-chevron-right"></i></button>
+        </div>
+    </div>
+
+    <script>
+        // Simple script for search functionality
+        document.querySelector('.search-button').addEventListener('click', function() {
+            const searchTerm = document.querySelector('.search-input').value.toLowerCase();
+            const rows = document.querySelectorAll('.table-row');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    row.style.display = 'flex';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+
+        // Allow search on Enter key
+        document.querySelector('.search-input').addEventListener('keyup', function(e) {
+            if (e.key === 'Enter') {
+                document.querySelector('.search-button').click();
+            }
+        });
+
+        // Simple script for action buttons
+        document.querySelectorAll('.action-button').forEach(button => {
+            button.addEventListener('click', function() {
+                if (this.querySelector('.fa-eye')) {
+                    alert('Viewing patient details...');
+                } else if (this.querySelector('.fa-edit')) {
+                    alert('Editing patient record...');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

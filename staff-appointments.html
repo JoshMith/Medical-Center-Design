@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointments - DKUT Medical Center</title>
+    <style>
+        /* Shared Styles (same as dashboard) */
+        :root {
+            --primary-blue: #0066CC;
+            --secondary-teal: #00A693;
+            --accent-green: #28A745;
+            --urgent-red: #DC2626;
+            --warning-yellow: #F59E0B;
+            --success-green: #10B981;
+            --white: #FFFFFF;
+            --light-gray: #F8FAFC;
+            --medium-gray: #64748B;
+            --dark-gray: #334155;
+            --almost-black: #0F172A;
+            --hero-gradient: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-teal) 100%);
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--light-gray);
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Navigation */
+        .sidebar {
+            width: 260px;
+            background: var(--white);
+            height: 100vh;
+            position: fixed;
+            box-shadow: var(--shadow-md);
+            padding: 1.5rem 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            padding: 0 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--hero-gradient);
+            border-radius: 10px;
+            margin-right: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .logo-text {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+        }
+
+        .nav-menu {
+            list-style: none;
+            padding: 0;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1.5rem;
+            text-decoration: none;
+            color: var(--dark-gray);
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: rgba(0, 102, 204, 0.1);
+            color: var(--primary-blue);
+        }
+
+        .nav-link i {
+            margin-right: 0.75rem;
+            font-size: 1.1rem;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 260px;
+            padding: 2rem;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 1.75rem;
+            color: var(--almost-black);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--hero-gradient);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 0.75rem;
+            font-weight: 600;
+        }
+
+        .user-name {
+            font-weight: 500;
+            color: var(--dark-gray);
+        }
+
+        /* Appointment Controls */
+        .appointment-controls {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+        }
+
+        .date-selector {
+            display: flex;
+            align-items: center;
+        }
+
+        .date-button {
+            background: var(--white);
+            border: 1px solid #E2E8F0;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .date-button:first-child {
+            border-radius: 8px 0 0 8px;
+        }
+
+        .date-button:last-child {
+            border-radius: 0 8px 8px 0;
+        }
+
+        .date-button.active {
+            background: var(--primary-blue);
+            color: white;
+            border-color: var(--primary-blue);
+        }
+
+        .date-button:hover:not(.active) {
+            background: var(--light-gray);
+        }
+
+        .new-appointment {
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .new-appointment:hover {
+            background: #0052A3;
+        }
+
+        /* Calendar View */
+        .calendar-header {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            background: var(--light-gray);
+            padding: 1rem;
+            border-radius: 12px 12px 0 0;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            grid-template-rows: repeat(5, 1fr);
+            background: var(--white);
+            border-radius: 0 0 12px 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .calendar-day {
+            min-height: 120px;
+            border: 1px solid #E2E8F0;
+            padding: 0.5rem;
+        }
+
+        .day-header {
+            text-align: right;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .day-header.today {
+            background: var(--primary-blue);
+            color: white;
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 24px;
+        }
+
+        .appointment-badge {
+            background: var(--light-gray);
+            border-radius: 6px;
+            padding: 0.25rem;
+            margin-bottom: 0.25rem;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .appointment-badge:hover {
+            background: rgba(0, 102, 204, 0.1);
+        }
+
+        .appointment-badge.urgent {
+            border-left: 3px solid var(--urgent-red);
+        }
+
+        .appointment-badge.high {
+            border-left: 3px solid var(--warning-yellow);
+        }
+
+        .appointment-badge.normal {
+            border-left: 3px solid var(--success-green);
+        }
+
+        /* List View */
+        .appointment-list {
+            background: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            margin-top: 2rem;
+        }
+
+        .list-header {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr 0.5fr;
+            background: var(--light-gray);
+            padding: 1rem;
+            font-weight: 600;
+        }
+
+        .list-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr 0.5fr;
+            padding: 1rem;
+            border-bottom: 1px solid #E2E8F0;
+            align-items: center;
+        }
+
+        .list-row:last-child {
+            border-bottom: none;
+        }
+
+        .list-row:hover {
+            background: rgba(0, 102, 204, 0.05);
+        }
+
+        .patient-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .patient-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--hero-gradient);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 0.75rem;
+            font-weight: 600;
+        }
+
+        .patient-name {
+            font-weight: 500;
+        }
+
+        .appointment-time {
+            font-weight: 600;
+        }
+
+        .appointment-status {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .status-confirmed {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success-green);
+        }
+
+        .status-pending {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning-yellow);
+        }
+
+        .status-cancelled {
+            background: rgba(100, 116, 139, 0.1);
+            color: var(--medium-gray);
+        }
+
+        .action-button {
+            background: transparent;
+            border: none;
+            color: var(--primary-blue);
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .action-button:hover {
+            background: rgba(0, 102, 204, 0.1);
+        }
+
+        /* View Toggle */
+        .view-toggle {
+            display: flex;
+            background: var(--light-gray);
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 1rem;
+        }
+
+        .view-button {
+            padding: 0.5rem 1rem;
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .view-button.active {
+            background: white;
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 220px;
+            }
+            .main-content {
+                margin-left: 220px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding: 1rem;
+            }
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+            .appointment-controls {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            .calendar-header, .calendar-grid {
+                display: none;
+            }
+            .list-header, .list-row {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .user-profile {
+                margin-top: 1rem;
+            }
+            .list-header, .list-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <div class="sidebar">
+        <div class="logo">
+            <div class="logo-icon">⚕</div>
+            <div class="logo-text">DKUT Medical</div>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="staff-dashboard.html" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="staff-patients.html" class="nav-link">
+                    <i class="fas fa-user-injured"></i>
+                    <span>Patients</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="staff-appointments.html" class="nav-link active">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Appointments</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="staff-consultations.html" class="nav-link">
+                    <i class="fas fa-comment-medical"></i>
+                    <span>Consultations</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="staff-records.html" class="nav-link">
+                    <i class="fas fa-file-medical"></i>
+                    <span>Medical Records</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="staff-settings.html" class="nav-link">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="header">
+            <h1>Appointment Management</h1>
+            <div class="user-profile">
+                <div class="user-avatar">SJ</div>
+                <div class="user-name">Dr. Sarah Johnson</div>
+            </div>
+        </div>
+
+        <!-- Appointment Controls -->
+        <div class="appointment-controls">
+            <div class="date-selector">
+                <button class="date-button"><i class="fas fa-chevron-left"></i></button>
+                <button class="date-button active">Today</button>
+                <button class="date-button">Week</button>
+                <button class="date-button">Month</button>
+                <button class="date-button"><i class="fas fa-chevron-right"></i></button>
+            </div>
+            <button class="new-appointment">
+                <i class="fas fa-plus"></i> New Appointment
+            </button>
+        </div>
+
+        <!-- View Toggle -->
+        <div class="view-toggle">
+            <button class="view-button active"><i class="fas fa-calendar-alt"></i> Calendar</button>
+            <button class="view-button"><i class="fas fa-list"></i> List</button>
+        </div>
+
+        <!-- Calendar View -->
+        <div class="calendar-header">
+            <div>Sunday</div>
+            <div>Monday</div>
+            <div>Tuesday</div>
+            <div>Wednesday</div>
+            <div>Thursday</div>
+            <div>Friday</div>
+            <div>Saturday</div>
+        </div>
+        <div class="calendar-grid">
+            <!-- Week 1 -->
+            <div class="calendar-day">
+                <div class="day-header">28</div>
+            </div>
+            <div class="calendar-day">
+                <div class="day-header">29</div>
+            </div>
+            <div class="calendar-day">
+                <div class="day-header">30</div>
+            </div>
+            <div class="calendar-day">
+                <div class="day-header">31</div>
+            </div>
+            <div class="calendar-day">
+                <div class="day-header today">1</div>
+                <div class="appointment-badge urgent">10:30 AM - John Doe</div>
+                <div class="appointment-badge high">11:15 AM - Alice Smith</div>
+            </div>
+            <div class="calendar-day">
+                <div class="day-header">2</div>
+                <div class="appointment-badge normal">1:45 PM - Robert Johnson</div>
+                <div class="appointment-badge normal">3:30 PM - Maria Williams</div>
+            </div>
+            <div class="calendar-day">
+                <div class="day-header">3</div>
+            </div>
+            
+            <!-- Week 2 -->
+            <div class="calendar-day">
+                <div class="day-header">4</div>
+            </div>
+            <div class="calendar-day">
+                <div class="day-header">5</div>
+                <div class="appointment-badge normal">9:00 AM - Thomas Brown</div>
+            </div>
+            <div class="calendar-day">
+                <div class="day-header">6</div>
+            </div>
+            <div class="calendar-day">
+                <div class="day-header">7</div>
+                <div class="appointment-badge high">2:00 PM - Sarah Miller</div>
+            </div>
+            <div class="calendar-day">
+                <div class="day-header">8</div>
+            </div>
+            <div class="calendar-day">
+                <div class="day-header">9</div>
+            </div>
+            <div class="calendar-day">
+                <div class="day-header">10</div>
+            </div>
+            
+            <!-- Week 3 -->
+            <div class="calendar-day">
+                <div class="day-header">11</div>
+            </div>
+            <div class="calendar-day">
+                <div class="day-header">12</div>
+            </div>
+            <div class="calendar-day">
+                <div class="day-header">13</div>
+            </div>
+            <div class="calendar-day">
+                <div class="day-header">14</div>
+            </div>
+            <div class="calendar-day">
+                <div class="day-header">15</div>
+            </div>
+            <div class="calendar-day">
+                <div class="day-header">16</div>
+            </div>
+            <div class="calendar-day">
+                <div class="day-header">17</div>
+            </div>
+            
+            <!-- Week 4 -->
+            <div class="calendar-day">
+                <div class="day-header">18</div>
+            </div>
+            <div class="calendar-day">
+                <div class="day-header">19</div>
+            </div>
+            <div class="calendar-day">
+                <div class="day-header">20</div>
+            </div>
+            <div class="calendar-day">
+                <div class="day-header">21</div>
+            </div>
+            <div class="calendar-day">
+                <div class="day-header">22</div>
+            </div>
+            <div class="calendar-day">
+                <div class="day-header">23</div>
+            </div>
+            <div class="calendar-day">
+                <div class="day-header">24</div>
+            </div>
+            
+            <!-- Week 5 -->
+            <div class="calendar-day">
+                <div class="day-header">25</div>
+            </div>
+            <div class="calendar-day">
+                <div class="day-header">26</div>
+            </div>
+            <div class="calendar-day">
+                <div class="day-header">27</div>
+            </div>
+            <div class="calendar-day">
+                <div class="day-header">28</div>
+            </div>
+            <div class="calendar-day">
+                <div class="day-header">29</div>
+            </div>
+            <div class="calendar-day">
+                <div class="day-header">30</div>
+            </div>
+            <div class="calendar-day">
+                <div class="day-header">31</div>
+            </div>
+        </div>
+
+        <!-- List View -->
+        <div class="appointment-list">
+            <div class="list-header">
+                <div>Patient</div>
+                <div>Date & Time</div>
+                <div>Reason</div>
+                <div>Status</div>
+                <div>Actions</div>
+            </div>
+            
+            <div class="list-row">
+                <div class="patient-info">
+                    <div class="patient-avatar">JD</div>
+                    <div class="patient-name">John Doe</div>
+                </div>
+                <div class="appointment-time">Today, 10:30 AM</div>
+                <div>Chest pain evaluation</div>
+                <div><span class="appointment-status status-confirmed">Confirmed</span></div>
+                <div>
+                    <button class="action-button"><i class="fas fa-edit"></i></button>
+                    <button class="action-button"><i class="fas fa-times"></i></button>
+                </div>
+            </div>
+            
+            <div class="list-row">
+                <div class="patient-info">
+                    <div class="patient-avatar">AS</div>
+                    <div class="patient-name">Alice Smith</div>
+                </div>
+                <div class="appointment-time">Today, 11:15 AM</div>
+                <div>Fever consultation</div>
+                <div><span class="appointment-status status-confirmed">Confirmed</span></div>
+                <div>
+                    <button class="action-button"><i class="fas fa-edit"></i></button>
+                    <button class="action-button"><i class="fas fa-times"></i></button>
+                </div>
+            </div>
+            
+            <div class="list-row">
+                <div class="patient-info">
+                    <div class="patient-avatar">RJ</div>
+                    <div class="patient-name">Robert Johnson</div>
+                </div>
+                <div class="appointment-time">Tomorrow, 1:45 PM</div>
+                <div>Follow-up visit</div>
+                <div><span class="appointment-status status-confirmed">Confirmed</span></div>
+                <div>
+                    <button class="action-button"><i class="fas fa-edit"></i></button>
+                    <button class="action-button"><i class="fas fa-times"></i></button>
+                </div>
+            </div>
+            
+            <div class="list-row">
+                <div class="patient-info">
+                    <div class="patient-avatar">MW</div>
+                    <div class="patient-name">Maria Williams</div>
+                </div>
+                <div class="appointment-time">Tomorrow, 3:30 PM</div>
+                <div>Routine checkup</div>
+                <div><span class="appointment-status status-pending">Pending</span></div>
+                <div>
+                    <button class="action-button"><i class="fas fa-edit"></i></button>
+                    <button class="action-button"><i class="fas fa-times"></i></button>
+                </div>
+            </div>
+            
+            <div class="list-row">
+                <div class="patient-info">
+                    <div class="patient-avatar">TB</div>
+                    <div class="patient-name">Thomas Brown</div>
+                </div>
+                <div class="appointment-time">Dec 5, 9:00 AM</div>
+                <div>Blood test results</div>
+                <div><span class="appointment-status status-cancelled">Cancelled</span></div>
+                <div>
+                    <button class="action-button"><i class="fas fa-edit"></i></button>
+                    <button class="action-button"><i class="fas fa-times"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simple script for view toggle
+        document.querySelectorAll('.view-button').forEach(button => {
+            button.addEventListener('click', function() {
+                document.querySelectorAll('.view-button').forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+                
+                if (this.textContent.includes('Calendar')) {
+                    document.querySelector('.calendar-header').style.display = 'grid';
+                    document.querySelector('.calendar-grid').style.display = 'grid';
+                    document.querySelector('.appointment-list').style.display = 'none';
+                } else {
+                    document.querySelector('.calendar-header').style.display = 'none';
+                    document.querySelector('.calendar-grid').style.display = 'none';
+                    document.querySelector('.appointment-list').style.display = 'block';
+                }
+            });
+        });
+
+        // Initially show calendar view
+        document.querySelector('.appointment-list').style.display = 'none';
+
+        // Simple script for date selector
+        document.querySelectorAll('.date-button').forEach(button => {
+            button.addEventListener('click', function() {
+                if (!this.classList.contains('active')) {
+                    document.querySelectorAll('.date-button').forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                }
+            });
+        });
+
+        // Simple script for new appointment button
+        document.querySelector('.new-appointment').addEventListener('click', function() {
+            alert('Opening new appointment form...');
+        });
+
+        // Simple script for action buttons
+        document.querySelectorAll('.action-button').forEach(button => {
+            button.addEventListener('click', function() {
+                if (this.querySelector('.fa-edit')) {
+                    alert('Editing appointment...');
+                } else if (this.querySelector('.fa-times')) {
+                    alert('Cancelling appointment...');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
