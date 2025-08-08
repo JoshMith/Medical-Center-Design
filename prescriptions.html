@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -42,43 +43,43 @@
 
         /* Sidebar */
         .sidebar {
-            background: white;
-            border-right: 1px solid #e2e8f0;
-            padding: 2rem 1rem;
-            position: sticky;
-            top: 0;
+            width: 260px;
+            background: var(--white);
             height: 100vh;
+            position: sticky;
+            box-shadow: var(--shadow-md);
+            padding: 1.5rem 0;
         }
 
-        .profile-card {
-            text-align: center;
+        .logo {
+            display: flex;
+            align-items: center;
+            padding: 0 1.5rem;
             margin-bottom: 2rem;
-            padding-bottom: 1.5rem;
-            border-bottom: 1px solid #e2e8f0;
         }
 
-        .avatar {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin: 0 auto 1rem;
-            border: 3px solid var(--primary-blue);
-        }
-
-        .profile-name {
-            font-weight: 600;
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--hero-gradient);
+            border-radius: 10px;
+            margin-right: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
             font-size: 1.2rem;
-            margin-bottom: 0.25rem;
         }
 
-        .profile-role {
-            color: var(--medium-gray);
-            font-size: 0.9rem;
+        .logo-text {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary-blue);
         }
 
         .nav-menu {
             list-style: none;
+            padding: 0;
         }
 
         .nav-item {
@@ -88,21 +89,15 @@
         .nav-link {
             display: flex;
             align-items: center;
-            padding: 0.75rem 1rem;
-            border-radius: 8px;
-            color: var(--dark-gray);
+            padding: 0.75rem 1.5rem;
             text-decoration: none;
-            transition: all 0.2s;
+            color: var(--dark-gray);
+            transition: all 0.3s ease;
         }
 
-        .nav-link:hover {
-            background-color: var(--light-gray);
-        }
-
-        .nav-link.active {
-            background-color: rgba(0, 102, 204, 0.1);
+        .nav-link:hover, .nav-link.active {
+            background: rgba(0, 102, 204, 0.1);
             color: var(--primary-blue);
-            font-weight: 500;
         }
 
         .nav-link i {
@@ -372,13 +367,7 @@
                 grid-template-columns: 1fr;
             }
 
-            .sidebar {
-                height: auto;
-                position: static;
-                border-right: none;
-                border-bottom: 1px solid #e2e8f0;
-            }
-
+            
             .main-content {
                 padding: 1.5rem;
             }
@@ -406,49 +395,54 @@
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
+
 <body>
     <div class="container">
         <!-- Sidebar Navigation -->
-        <aside class="sidebar">
-            <div class="profile-card">
-                <img src="https://randomuser.me/api/portraits/women/45.jpg" alt="Profile" class="avatar">
-                <h3 class="profile-name">Jane Doe</h3>
-                <p class="profile-role">Student ID: DKUT/2024/012</p>
+        <div class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">⚕</div>
+                <div class="logo-text">DKUT Medical</div>
             </div>
-
             <ul class="nav-menu">
                 <li class="nav-item">
                     <a href="dashboard.html" class="nav-link">
-                        <i class="fas fa-home"></i> Dashboard
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="appointments.html" class="nav-link">
-                        <i class="fas fa-calendar-check"></i> Appointments
+                        <i class="fas fa-calendar-check"></i>
+                        <span>Appointments</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="consultations.html" class="nav-link">
+                        <i class="fas fa-comment-medical"></i>
+                        <span>Consultations</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="health-records.html" class="nav-link">
+                        <i class="fas fa-file-medical"></i>
+                        <span>Health Records</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="prescriptions.html" class="nav-link active">
-                        <i class="fas fa-prescription-bottle-alt"></i> Prescriptions
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="medical-records.html" class="nav-link">
-                        <i class="fas fa-file-medical"></i> Medical Records
+                        <i class="fas fa-prescription-bottle-alt"></i>
+                        <span>Prescriptions</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="settings.html" class="nav-link">
-                        <i class="fas fa-user-cog"></i> Settings
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="index.html" class="nav-link">
-                        <i class="fas fa-sign-out-alt"></i> Logout
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
                     </a>
                 </li>
             </ul>
-        </aside>
+        </div>
 
         <!-- Main Content -->
         <main class="main-content">
@@ -664,4 +658,5 @@
         });
     </script>
 </body>
+
 </html>
