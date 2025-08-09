@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback - DKUT Medical Center</title>
+    <style>
+        :root {
+            --primary-blue: #0066CC;
+            --secondary-teal: #00A693;
+            --accent-green: #28A745;
+            --warm-orange: #FF6B35;
+            --white: #FFFFFF;
+            --light-gray: #F8FAFC;
+            --medium-gray: #64748B;
+            --dark-gray: #334155;
+            --almost-black: #0F172A;
+            --hero-gradient: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-teal) 100%);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--light-gray);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: var(--hero-gradient);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><radialGradient id="a" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="rgba(255,255,255,0.1)"/><stop offset="100%" stop-color="rgba(255,255,255,0)"/></radialGradient></defs><circle cx="200" cy="200" r="80" fill="url(%23a)"/><circle cx="800" cy="300" r="120" fill="url(%23a)"/></svg>');
+            opacity: 0.6;
+        }
+
+        .header-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: -1rem;
+            left: 2rem;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .feedback-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2.5rem;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 2rem;
+        }
+
+        .feedback-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .feedback-header h2 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: var(--almost-black);
+            margin-bottom: 0.5rem;
+        }
+
+        .feedback-header p {
+            color: var(--medium-gray);
+        }
+
+        .form-group {
+            margin-bottom: 2rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: var(--dark-gray);
+            margin-bottom: 0.75rem;
+            font-size: 1rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid var(--light-gray);
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+        }
+
+        .form-textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .rating-scale {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+        }
+
+        .rating-option {
+            text-align: center;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .rating-option:hover {
+            background: rgba(0, 102, 204, 0.05);
+        }
+
+        .rating-option.selected {
+            background: rgba(0, 102, 204, 0.1);
+            color: var(--primary-blue);
+        }
+
+        .rating-number {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .rating-label {
+            font-size: 0.85rem;
+            color: var(--medium-gray);
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 0.75rem;
+        }
+
+        .checkbox-item {
+            background: var(--light-gray);
+            padding: 1rem;
+            border-radius: 12px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .checkbox-item:hover {
+            background: rgba(0, 102, 204, 0.05);
+            border-color: var(--primary-blue);
+        }
+
+        .checkbox-item.selected {
+            background: rgba(0, 102, 204, 0.1);
+            border-color: var(--primary-blue);
+            color: var(--primary-blue);
+        }
+
+        .checkbox-item input {
+            margin: 0;
+            transform: scale(1.2);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background: var(--hero-gradient);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .success-message {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10B981;
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 2rem;
+            display: none;
+        }
+
+        .success-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .success-message h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .success-message p {
+            color: var(--medium-gray);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1rem;
+            }
+
+            .feedback-card {
+                padding: 1.5rem;
+            }
+
+            .rating-scale {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+
+            .rating-option {
+                flex: 1 0 40%;
+            }
+
+            .checkbox-group {
+                grid-template-columns: 1fr;
+            }
+
+            .back-btn {
+                position: static;
+                margin-bottom: 1rem;
+                display: inline-block;
+                width: fit-content;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <a href="dashboard.html" class="back-btn">← Back to Dashboard</a>
+            <h1><i class="fas fa-comment-medical"></i> Share Your Feedback</h1>
+            <p>Your opinions help us improve our services</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="success-message" id="successMessage">
+            <div class="success-icon">✓</div>
+            <h3>Thank You for Your Feedback!</h3>
+            <p>We appreciate you taking the time to share your experience with us.</p>
+            <p>Your feedback has been submitted successfully.</p>
+        </div>
+
+        <div class="feedback-card" id="feedbackForm">
+            <div class="feedback-header">
+                <h2>Patient Experience Survey</h2>
+                <p>Please take a few minutes to share your recent experience at DKUT Medical Center</p>
+            </div>
+
+            <form id="feedbackForm">
+                <div class="form-group">
+                    <label class="form-label">Which service are you providing feedback about?</label>
+                    <select class="form-control" id="serviceType" required>
+                        <option value="" disabled selected>Select a service</option>
+                        <option value="general">General Consultation</option>
+                        <option value="emergency">Emergency Care</option>
+                        <option value="lab">Laboratory Services</option>
+                        <option value="pharmacy">Pharmacy</option>
+                        <option value="specialist">Specialist Consultation</option>
+                        <option value="other">Other Service</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Overall, how satisfied were you with your experience?</label>
+                    <div class="rating-scale">
+                        <div class="rating-option" onclick="selectRating(1)">
+                            <div class="rating-number">1</div>
+                            <div class="rating-label">Very Dissatisfied</div>
+                        </div>
+                        <div class="rating-option" onclick="selectRating(2)">
+                            <div class="rating-number">2</div>
+                            <div class="rating-label">Dissatisfied</div>
+                        </div>
+                        <div class="rating-option" onclick="selectRating(3)">
+                            <div class="rating-number">3</div>
+                            <div class="rating-label">Neutral</div>
+                        </div>
+                        <div class="rating-option" onclick="selectRating(4)">
+                            <div class="rating-number">4</div>
+                            <div class="rating-label">Satisfied</div>
+                        </div>
+                        <div class="rating-option" onclick="selectRating(5)">
+                            <div class="rating-number">5</div>
+                            <div class="rating-label">Very Satisfied</div>
+                        </div>
+                    </div>
+                    <input type="hidden" id="ratingValue" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">What aspects of your experience stood out? (Select all that apply)</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item" onclick="toggleCheckbox('waitTime')">
+                            <input type="checkbox" id="waitTime" value="waitTime">
+                            <span>Wait Time</span>
+                        </div>
+                        <div class="checkbox-item" onclick="toggleCheckbox('staffAttitude')">
+                            <input type="checkbox" id="staffAttitude" value="staffAttitude">
+                            <span>Staff Attitude</span>
+                        </div>
+                        <div class="checkbox-item" onclick="toggleCheckbox('cleanliness')">
+                            <input type="checkbox" id="cleanliness" value="cleanliness">
+                            <span>Cleanliness</span>
+                        </div>
+                        <div class="checkbox-item" onclick="toggleCheckbox('communication')">
+                            <input type="checkbox" id="communication" value="communication">
+                            <span>Communication</span>
+                        </div>
+                        <div class="checkbox-item" onclick="toggleCheckbox('treatment')">
+                            <input type="checkbox" id="treatment" value="treatment">
+                            <span>Treatment Effectiveness</span>
+                        </div>
+                        <div class="checkbox-item" onclick="toggleCheckbox('facilities')">
+                            <input type="checkbox" id="facilities" value="facilities">
+                            <span>Facilities</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Please share more details about your experience</label>
+                    <textarea class="form-control form-textarea" id="comments" placeholder="What did we do well? What could we improve?"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Would you recommend DKUT Medical Center to others?</label>
+                    <div class="checkbox-group" style="grid-template-columns: repeat(3, 1fr);">
+                        <div class="checkbox-item" onclick="selectRecommend('yes')">
+                            <input type="radio" name="recommend" id="recommendYes" value="yes">
+                            <span>Yes, definitely</span>
+                        </div>
+                        <div class="checkbox-item" onclick="selectRecommend('maybe')">
+                            <input type="radio" name="recommend" id="recommendMaybe" value="maybe">
+                            <span>Maybe</span>
+                        </div>
+                        <div class="checkbox-item" onclick="selectRecommend('no')">
+                            <input type="radio" name="recommend" id="recommendNo" value="no">
+                            <span>Probably not</span>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn">Submit Feedback</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let selectedRating = 0;
+        let selectedRecommendation = '';
+
+        function selectRating(rating) {
+            selectedRating = rating;
+            
+            // Update UI
+            document.querySelectorAll('.rating-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            document.querySelector(`.rating-option:nth-child(${rating})`).classList.add('selected');
+            document.getElementById('ratingValue').value = rating;
+        }
+
+        function toggleCheckbox(id) {
+            const checkbox = document.getElementById(id);
+            const checkboxItem = checkbox.parentElement;
+            
+            checkbox.checked = !checkbox.checked;
+            
+            if (checkbox.checked) {
+                checkboxItem.classList.add('selected');
+            } else {
+                checkboxItem.classList.remove('selected');
+            }
+        }
+
+        function selectRecommend(value) {
+            selectedRecommendation = value;
+            
+            // Update UI
+            document.querySelectorAll('[name="recommend"]').forEach(radio => {
+                radio.parentElement.classList.remove('selected');
+            });
+            
+            document.getElementById(`recommend${value.charAt(0).toUpperCase() + value.slice(1)}`).parentElement.classList.add('selected');
+        }
+
+        document.getElementById('feedbackForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Validate form
+            if (selectedRating === 0) {
+                alert('Please select an overall satisfaction rating');
+                return;
+            }
+            
+            // In a real app, this would send data to the server
+            const formData = {
+                serviceType: document.getElementById('serviceType').value,
+                rating: selectedRating,
+                aspects: [],
+                comments: document.getElementById('comments').value,
+                recommendation: selectedRecommendation
+            };
+            
+            // Get selected aspects
+            document.querySelectorAll('.checkbox-group input[type="checkbox"]:checked').forEach(checkbox => {
+                formData.aspects.push(checkbox.value);
+            });
+            
+            console.log('Form data:', formData); // For demo purposes
+            
+            // Show success message
+            document.getElementById('feedbackForm').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'block';
+            
+            // In a real app, you would redirect or reset the form after submission
+        });
+    </script>
+</body>
+</html>

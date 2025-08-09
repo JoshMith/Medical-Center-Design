@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -338,13 +339,14 @@
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
+
 <body>
     <div class="container">
         <!-- Sidebar Navigation -->
         <aside class="sidebar">
             <a href="index.html" class="nav-link" style="text-decoration: none; color: var(--dark-gray);">
-            <i class="fas fa-arrow-left"></i> Back to Home
-        </a>
+                <i class="fas fa-arrow-left"></i> Back to Home
+            </a>
             <div class="profile-card">
                 <img src="https://randomuser.me/api/portraits/women/45.jpg" alt="Profile" class="avatar">
                 <h3 class="profile-name">Jane Doe</h3>
@@ -354,27 +356,44 @@
             <ul class="nav-menu">
                 <li class="nav-item">
                     <a href="dashboard.html" class="nav-link">
-                        <i class="fas fa-home"></i> Dashboard
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="appointments.html" class="nav-link">
-                        <i class="fas fa-calendar-check"></i> Appointments
+                        <i class="fas fa-calendar-check"></i>
+                        <span>Appointments</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="prescriptions.html" class="nav-link">
-                        <i class="fas fa-prescription-bottle-alt"></i> Prescriptions
+                    <a href="consultations.html" class="nav-link">
+                        <i class="fas fa-comment-medical"></i>
+                        <span>Consultations</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="health-records.html" class="nav-link">
-                        <i class="fas fa-file-medical"></i> Medical Records
+                        <i class="fas fa-file-medical"></i>
+                        <span>Health Records</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="prescriptions.html" class="nav-link">
+                        <i class="fas fa-prescription-bottle-alt"></i>
+                        <span>Prescriptions</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="feedback.html" class="nav-link">
+                        <i class="fas fa-clipboard-check"></i>
+                        <span>Feedback & Reviews</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="settings.html" class="nav-link active">
-                        <i class="fas fa-user-cog"></i> Settings
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -433,7 +452,8 @@
 
                     <div class="form-group">
                         <label class="form-label">Email</label>
-                        <input type="email" class="form-control" id="email" value="jane.doe@students.dkut.ac.ke" disabled>
+                        <input type="email" class="form-control" id="email" value="jane.doe@students.dkut.ac.ke"
+                            disabled>
                     </div>
 
                     <div class="form-group">
@@ -541,7 +561,7 @@
             personalFormControls.forEach(control => {
                 control.disabled = !control.disabled;
             });
-            
+
             personalFormActions.style.display = personalFormActions.style.display === 'none' ? 'block' : 'none';
             editPersonalBtn.style.display = 'none';
         });
@@ -550,7 +570,7 @@
             personalFormControls.forEach(control => {
                 control.disabled = true;
             });
-            
+
             personalFormActions.style.display = 'none';
             editPersonalBtn.style.display = 'flex';
         });
@@ -558,11 +578,11 @@
         savePersonalBtn.addEventListener('click', () => {
             // Here you would typically save the data to the server
             alert('Personal information updated successfully!');
-            
+
             personalFormControls.forEach(control => {
                 control.disabled = true;
             });
-            
+
             personalFormActions.style.display = 'none';
             editPersonalBtn.style.display = 'flex';
         });
@@ -573,4 +593,5 @@
         });
     </script>
 </body>
+
 </html>
