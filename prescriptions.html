@@ -95,7 +95,8 @@
             transition: all 0.3s ease;
         }
 
-        .nav-link:hover, .nav-link.active {
+        .nav-link:hover,
+        .nav-link.active {
             background: rgba(0, 102, 204, 0.1);
             color: var(--primary-blue);
         }
@@ -366,12 +367,14 @@
             .container {
                 grid-template-columns: 1fr;
             }
+
             .sidebar {
                 width: 100%;
                 position: relative;
                 height: auto;
                 box-shadow: none;
-            }            
+            }
+
             .main-content {
                 padding: 1.5rem;
             }
@@ -404,6 +407,9 @@
     <div class="container">
         <!-- Sidebar Navigation -->
         <div class="sidebar">
+            <a href="index.html" class="nav-link" style="text-decoration: none; color: var(--dark-gray);">
+                <i class="fas fa-arrow-left"></i> Back to Home
+            </a>
             <div class="logo">
                 <div class="logo-icon">⚕</div>
                 <div class="logo-text">DKUT Medical</div>
